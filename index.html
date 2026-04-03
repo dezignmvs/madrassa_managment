@@ -3,36 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanjayka | Rahmaniyya madrassa</title>
+    <title>Festie - Minimal Flow Management</title>
     
-    <!-- PWA Native Meta Tags (Crucial for iOS & Mobile) -->
-    <meta name="theme-color" content="#ff5e62">
+    <!-- PWA Native Meta Tags -->
+    <meta name="theme-color" content="#FCFCFC">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Money Flow">
+    <meta name="apple-mobile-web-app-title" content="Festie">
 
     <!-- Google Fonts & Font Awesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* Creative Minimalist Theme Variables */
+        /* Custom Theme Variables */
         :root {
-            --bg: #fafafa;
-            --surface: rgba(255, 255, 255, 0.7);
+            --bg: #FCFCFC; /* Off-white Background */
             --surface-solid: #ffffff;
-            --fg: #09090b;
-            --muted: #71717a;
-            --border: rgba(0, 0, 0, 0.08);
-            --accent-start: #ff5e62;
-            --accent-end: #ff9966;
-            --success: #10b981;
-            --danger: #ef4444;
-            --info: #3b82f6;
-            --radius: 16px;
-            --radius-pill: 9999px;
-            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --surface-hover: #f1f3f5;
+            --fg: #111827; /* Dark text for contrast */
+            --fg-light: #374151;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --border-dark: #d1d5db;
+            --money-in: #06D6A0; /* Green (Deposit) */
+            --money-out: #EF476F; /* Pinkish-Red (Withdraw) */
+            --accent-yellow: #FFD166; /* Yellow Accent */
+            --radius: 6px;
+            --transition: all 0.2s ease;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -44,29 +43,23 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            position: relative;
             -webkit-tap-highlight-color: transparent;
+            line-height: 1.6;
         }
 
-        /* Ambient Background Orbs */
-        body::before, body::after {
-            content: ''; position: fixed; border-radius: 50%; z-index: -1; filter: blur(80px); opacity: 0.6;
-            animation: float 10s infinite alternate ease-in-out;
-        }
-        body::before { top: -10%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(255, 94, 98, 0.15) 0%, transparent 70%); }
-        body::after { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(255, 153, 102, 0.15) 0%, transparent 70%); animation-delay: -5s; }
-
-        @keyframes float { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(30px) scale(1.05); } }
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
 
         /* Utilities */
         .hidden { display: none !important; }
         .text-center { text-align: center; }
         .text-muted { color: var(--muted); }
-        .text-danger { color: var(--danger); }
+        .text-danger { color: var(--money-out); }
+        .text-success { color: var(--money-in); }
         .mt-4 { margin-top: 1rem; }
         .mt-6 { margin-top: 1.5rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
         .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
         .mb-8 { margin-bottom: 2rem; }
         .flex { display: flex; }
         .justify-between { justify-content: space-between; }
@@ -75,434 +68,344 @@
         .gap-4 { gap: 1rem; }
 
         /* Typography */
-        h1 { font-size: 4rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; }
-        h2 { font-size: 1.75rem; font-weight: 600; letter-spacing: -0.02em; }
-        h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
-        p { line-height: 1.6; color: var(--muted); }
-        
-        .text-gradient {
-            background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Uiverse.io UI Components */
-        /* Uiverse Loader */
-        .uiverse-loader {
-          --dim: 3rem;
-          width: var(--dim);
-          height: var(--dim);
-          position: relative;
-          animation: spin988 2s linear infinite;
-        }
-        .uiverse-loader .circle {
-          --color: var(--accent-start);
-          --dim: 1.2rem;
-          width: var(--dim);
-          height: var(--dim);
-          background-color: var(--color);
-          border-radius: 50%;
-          position: absolute;
-        }
-        .uiverse-loader .circle:nth-child(1) { top: 0; left: 0; }
-        .uiverse-loader .circle:nth-child(2) { top: 0; right: 0; }
-        .uiverse-loader .circle:nth-child(3) { bottom: 0; left: 0; }
-        .uiverse-loader .circle:nth-child(4) { bottom: 0; right: 0; }
-        
-        @keyframes spin988 {
-          0% { transform: scale(1) rotate(0); }
-          20%, 25% { transform: scale(1.3) rotate(90deg); }
-          45%, 50% { transform: scale(1) rotate(180deg); }
-          70%, 75% { transform: scale(1.3) rotate(270deg); }
-          95%, 100% { transform: scale(1) rotate(360deg); }
-        }
-
-        /* Uiverse Glowing Button */
-        .btn-uiverse {
-          position: relative;
-          padding: 16px 32px;
-          border-radius: var(--radius-pill);
-          border: none;
-          color: #fff;
-          cursor: pointer;
-          background-color: #111827;
-          transition: all 0.2s ease;
-          font-weight: 600;
-          display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-          font-size: 15px;
-        }
-        .btn-uiverse:active { transform: scale(0.96); }
-        .btn-uiverse::before, .btn-uiverse::after {
-          content: "";
-          position: absolute;
-          inset: -3px;
-          border-radius: inherit;
-          background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
-          z-index: -1;
-          transition: all 0.4s ease;
-        }
-        .btn-uiverse::after { filter: blur(14px); opacity: 0.5; }
-        .btn-uiverse:hover::after { opacity: 1; filter: blur(20px); }
+        h1 { font-size: 4rem; font-weight: 800; letter-spacing: -0.05em; line-height: 1.1; color: var(--fg); }
+        h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
+        h3 { font-size: 1.1rem; font-weight: 500; margin-bottom: 1rem; color: var(--fg); }
+        p { color: var(--muted); }
 
         /* Standard Buttons & Inputs */
         .btn {
-            background: var(--fg); color: var(--bg);
-            border: 1px solid var(--fg); padding: 14px 28px;
-            border-radius: var(--radius-pill); font-weight: 500;
+            background: var(--surface-solid); color: var(--fg);
+            border: 1px solid var(--border-dark); padding: 12px 24px;
+            border-radius: var(--radius); font-weight: 500;
             cursor: pointer; transition: var(--transition);
             display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            font-size: 15px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+            font-size: 14px;
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); opacity: 0.9; }
-        .btn-ghost { background: transparent; color: var(--muted); border-color: transparent; box-shadow: none; }
-        .btn-ghost:hover { color: var(--fg); background: rgba(0,0,0,0.05); box-shadow: none; transform: translateY(0); }
-        .btn-outline { background: transparent; color: var(--fg); border-color: var(--border); box-shadow: none; }
-        .btn-outline:hover { background: var(--surface-solid); border-color: rgba(0,0,0,0.2); }
-        .btn-success { background: var(--success); border-color: var(--success); }
-        .btn-danger { background: var(--danger); border-color: var(--danger); }
+        .btn:hover { background: var(--surface-hover); }
+        
+        .btn-primary { 
+            background: var(--fg); 
+            color: #ffffff; border: 1px solid var(--fg);
+        }
+        .btn-primary:hover { background: var(--fg-light); color: #ffffff; border-color: var(--fg-light); }
+        
+        .btn-success { background: var(--surface-solid); color: var(--money-in); border: 1px solid var(--border-dark); }
+        .btn-success:hover { background: var(--surface-hover); border-color: var(--money-in); }
+        
+        .btn-danger { background: var(--surface-solid); color: var(--money-out); border: 1px solid var(--border-dark); }
+        .btn-danger:hover { background: var(--surface-hover); border-color: var(--money-out); }
+
+        .btn-ghost { background: transparent; color: var(--muted); border-color: transparent; }
+        .btn-ghost:hover { color: var(--fg); background: var(--surface-hover); }
+
+        /* === UIVERSE ANIMATED BUTTONS === */
+        .btn-anim, .btn-anim-filled {
+            position: relative;
+            transition: 0.5s;
+            border-radius: var(--radius);
+            cursor: pointer;
+            overflow: hidden;
+            border: 1px solid var(--fg);
+        }
+        
+        .btn-anim { background-color: var(--surface-solid); }
+        .btn-anim-filled { background-color: var(--fg); }
+
+        .btn-anim.btn-lg, .btn-anim-filled.btn-lg { width: 180px; height: 52px; }
+        .btn-anim.btn-md, .btn-anim-filled.btn-md { width: 140px; height: 40px; }
+
+        .btn-anim p, .btn-anim-filled p {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            transition: 0.5s;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .btn-anim p { color: var(--fg); }
+        .btn-anim-filled p { color: #ffffff; }
+
+        .btn-anim.btn-lg p, .btn-anim-filled.btn-lg p { font-size: 15px; }
+        .btn-anim.btn-md p, .btn-anim-filled.btn-md p { font-size: 13px; }
+
+        .btn-anim i, .btn-anim-filled i {
+            position: absolute;
+            top: 50%;
+            right: 18px;
+            transform: translateY(-50%);
+            margin: 0;
+            opacity: 0;
+            transition: 0.5s;
+            color: #ffffff;
+        }
+
+        .btn-anim:hover p, .btn-anim-filled:hover p { left: 40%; }
+        .btn-anim:hover i, .btn-anim-filled:hover i { opacity: 1; }
+        
+        .btn-anim:hover { background-color: var(--fg); }
+        .btn-anim:hover p { color: #ffffff; }
+        /* ================================ */
         
         .btn-icon {
             background: transparent; border: none; font-size: 16px; cursor: pointer;
-            padding: 8px; border-radius: 50%; transition: var(--transition);
-            display: inline-flex; align-items: center; justify-content: center;
+            padding: 8px; border-radius: var(--radius); transition: var(--transition);
+            display: inline-flex; align-items: center; justify-content: center; color: var(--muted);
         }
-        .btn-icon:hover { background: rgba(0,0,0,0.05); transform: scale(1.1); color: var(--fg); }
-        .btn-icon.delete:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .btn-icon:hover { background: var(--surface-hover); color: var(--fg); }
+        .btn-icon.delete:hover { background: var(--surface-hover); color: var(--money-out); }
 
         .password-wrapper { position: relative; width: 100%; margin-bottom: 16px; }
         .password-wrapper input { margin-bottom: 0; padding-right: 45px; }
-        .password-toggle { 
-            position: absolute; right: 14px; top: 50%; transform: translateY(-50%); 
-            cursor: pointer; color: var(--muted); transition: color 0.3s; font-size: 16px;
-        }
+        .password-toggle { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--muted); font-size: 14px; }
         .password-toggle:hover { color: var(--fg); }
 
         input, select {
-            width: 100%; padding: 14px 20px; margin-bottom: 16px;
-            border: 1px solid var(--border); border-radius: 12px;
+            width: 100%; padding: 12px 16px; margin-bottom: 16px;
+            border: 1px solid var(--border-dark); border-radius: var(--radius);
             background: var(--surface-solid); color: var(--fg); outline: none;
-            transition: var(--transition); font-size: 15px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            transition: var(--transition); font-size: 14px; font-weight: 400;
         }
-        input:focus, select:focus { border-color: var(--accent-start); box-shadow: 0 0 0 4px rgba(255, 94, 98, 0.1); }
+        input:focus, select:focus { border-color: var(--fg); }
 
         /* Tabs System */
-        .tab-nav { display: flex; gap: 10px; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
-        .tab-nav::-webkit-scrollbar { display: none; }
-        .tab-btn { padding: 14px 20px; background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--muted); font-weight: 500; cursor: pointer; transition: var(--transition); white-space: nowrap; font-size: 15px; }
+        .tab-nav { display: flex; gap: 32px; border-bottom: 1px solid var(--border); margin-bottom: 32px; padding: 0; }
+        .tab-btn { 
+            padding: 12px 0; background: transparent; border: none; border-bottom: 2px solid transparent; 
+            color: var(--muted); font-weight: 500; cursor: pointer; transition: var(--transition); 
+            font-size: 14px; display: inline-flex; gap: 8px; align-items: center; margin-bottom: -1px;
+        }
         .tab-btn:hover { color: var(--fg); }
-        .tab-btn.active { color: var(--accent-start); border-bottom-color: var(--accent-start); font-weight: 600; }
-        .tab-content { display: none; animation: fadeIn 0.4s ease; }
-        .tab-content.active { display: block; }
+        .tab-btn.active { color: var(--fg); border-bottom-color: var(--fg); }
+        
+        .tab-content, .report-tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active, .report-tab-content.active { display: block; }
 
-        /* Navigation (Glassmorphism) */
+        /* Navigation */
         nav { 
-            padding: 16px 5%; border-bottom: 1px solid var(--border); 
+            padding: 24px 5%; border-bottom: 1px solid var(--border); 
             display: flex; justify-content: space-between; align-items: center;
-            background: rgba(250, 250, 250, 0.6); backdrop-filter: blur(16px);
-            position: sticky; top: 0; z-index: 100;
+            background: var(--surface-solid); position: sticky; top: 0; z-index: 100;
         }
-        .logo { font-weight: 700; font-size: 20px; display: flex; align-items: center; gap: 8px; letter-spacing: -0.02em; cursor: pointer; }
-        .logo i { color: var(--accent-start); }
-        .live-badge {
-            display: inline-flex; align-items: center; gap: 5px; font-size: 11px;
-            background: rgba(16, 185, 129, 0.1); color: var(--success);
-            padding: 3px 8px; border-radius: 12px; font-weight: 600; margin-left: 6px; letter-spacing: 0.5px;
-        }
-        .live-dot {
-            width: 6px; height: 6px; background: var(--success); border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
+        .logo { font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 8px; letter-spacing: -0.02em; cursor: pointer; color: var(--fg); text-transform: uppercase;}
         
         /* Layout & Views */
-        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px 80px; width: 100%; }
-        .view { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
-        
-        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
-
-        /* Landing Page Specifics */
-        .hero-badge {
-            display: inline-block; padding: 6px 16px; border-radius: var(--radius-pill);
-            border: 1px solid var(--border); background: var(--surface-solid);
-            font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 24px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
-        .hero-badge i { color: var(--accent-start); margin-right: 6px; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 60px 20px 80px; width: 100%; }
+        .view { animation: fadeIn 0.4s ease forwards; opacity: 0; transform: translateY(10px); }
 
         /* Cards & Tables */
         .card { 
-            background: var(--surface); backdrop-filter: blur(12px);
+            background: var(--surface-solid);
             border: 1px solid var(--border); border-radius: var(--radius); 
-            padding: 32px; box-shadow: 0 8px 32px rgba(0,0,0,0.02);
+            padding: 32px;
         }
         .grid { display: grid; gap: 24px; }
         .grid-cols-2 { grid-template-columns: 1fr 1fr; }
         .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
         .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 16px 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
-        th { color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 0.05em; }
-        tr:hover td { background: rgba(0,0,0,0.01); }
+        th { color: var(--muted); font-weight: 500; font-size: 12px; letter-spacing: 0.02em; }
+        td { font-weight: 400; color: var(--fg-light); }
+        tr:hover td { background: var(--bg); }
         tr:last-child td { border-bottom: none; }
-        .badge { padding: 6px 12px; border-radius: var(--radius-pill); font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
-        .badge.up { background: rgba(16, 185, 129, 0.1); color: var(--success); }
-        .badge.down { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
 
-        /* Auth Modals (Centered) */
-        .auth-wrapper { max-width: 440px; margin: 40px auto; }
-        
-        /* Biometric Scanner */
-        .biometric-box { text-align: center; padding: 50px 40px; }
-        .scanner-container { position: relative; width: 120px; height: 120px; margin: 0 auto 30px; color: var(--border); font-size: 120px; }
-        .scanner-container i { color: var(--border); transition: color 0.4s; }
-        .scanner-container.scanning i { color: var(--fg); opacity: 0.8; }
-        .laser {
-            position: absolute; left: 0; top: 0; width: 100%; height: 3px;
-            background: var(--accent-start); box-shadow: 0 0 15px var(--accent-start);
-            display: none; animation: scan 1.5s infinite alternate ease-in-out; border-radius: 50%;
+        /* Custom Report Summary Boxes */
+        .report-summary-box {
+            border: 1px solid var(--border); border-radius: var(--radius); padding: 24px;
+            background: var(--surface-solid); display: flex; flex-direction: column; gap: 4px;
         }
-        .scanner-container.scanning .laser { display: block; }
-        
-        @keyframes scan { 0% { top: 10%; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { top: 90%; opacity: 0; } }
+        .report-summary-box p { font-size: 12px; font-weight: 500; color: var(--muted); margin: 0; }
+        .report-summary-box h3 { font-size: 2rem; font-weight: 600; margin: 0; letter-spacing: -0.02em; }
 
-        /* Custom Toast Notifications */
+        /* Auth Modals */
+        .auth-wrapper { max-width: 400px; margin: 40px auto; border: none; padding: 0; }
+        
+        /* Modals & Toasts */
         #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast {
-            background: var(--fg); color: var(--bg); padding: 14px 24px; border-radius: 12px;
-            font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); opacity: 0; transform: translateY(20px) scale(0.95);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .toast.show { opacity: 1; transform: translateY(0) scale(1); }
-        .toast.error { background: var(--danger); }
-        .toast.success { background: var(--success); }
+        .toast { background: var(--fg); color: #ffffff; padding: 14px 24px; border-radius: var(--radius); font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.error { background: var(--money-out); color: var(--fg); }
+        .toast.success { background: var(--money-in); }
         
-        /* Custom Modal Overlay */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-            z-index: 10000; display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: all 0.3s ease;
-        }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: all 0.3s ease; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-box { transform: translateY(20px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .modal-box { transform: translateY(10px); transition: all 0.3s ease; border: 1px solid var(--border-dark); }
         .modal-overlay.active .modal-box { transform: translateY(0); }
 
+        /* Loader */
+        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; gap: 20px; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s; }
+        .spinner { width: 40px; height: 40px; border: 2px solid var(--border); border-top: 2px solid var(--fg); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         /* Responsive */
-        @media(max-width: 1024px) {
-            .grid-cols-4 { grid-template-columns: 1fr 1fr; }
-            .grid-cols-3 { grid-template-columns: 1fr 1fr; }
-        }
         @media(max-width: 768px) {
             .grid-cols-2, .grid-cols-4, .grid-cols-3 { grid-template-columns: 1fr; }
             h1 { font-size: 2.5rem; }
-            .container { padding: 20px 20px 80px; }
+            .container { padding: 40px 20px 80px; }
             #toast-container { bottom: 20px; left: 20px; right: 20px; align-items: center; }
             .toast { width: 100%; justify-content: center; }
-            .card { padding: 20px; }
+            .card { padding: 24px; }
+            .hide-mobile { display: none !important; }
         }
 
-        /* Loading Overlay */
-        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; gap: 20px; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s; }
+        /* Print Settings for Reports */
+        @media print {
+            body { background: #fff !important; color: #000 !important; }
+            nav, .no-print, #toast-container, #loader, .modal-overlay { display: none !important; }
+            .view { animation: none !important; transform: none !important; opacity: 1 !important; display: block !important; padding: 0 !important; }
+            .container { padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+            .card, .report-summary-box { border: 1px solid #000 !important; padding: 15px !important; background: transparent !important; page-break-inside: avoid; }
+            .grid { display: flex !important; flex-wrap: wrap !important; gap: 15px !important; }
+            .grid > * { flex: 1 1 30% !important; }
+            table { border-collapse: collapse !important; width: 100% !important; margin-top: 20px !important; }
+            th, td { border: 1px solid #000 !important; padding: 12px !important; color: #000 !important; }
+            body > div.view.hidden { display: none !important; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Initial Loader (Uiverse Styled) -->
+    <!-- Initial Loader -->
     <div id="loader">
-        <div class="uiverse-loader">
-            <div class="circle"></div>
-            <div class="circle"></div>
-            <div class="circle"></div>
-            <div class="circle"></div>
-        </div>
-        <p class="text-muted" style="font-size: 14px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;">Connecting to Realtime DB</p>
+        <div class="spinner"></div>
+        <p class="text-muted" style="font-size: 12px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;">Syncing Environment</p>
     </div>
 
-    <!-- Toast Notification Container -->
+    <!-- Toast & Modals -->
     <div id="toast-container"></div>
 
-    <!-- Custom Error/Info Modal -->
     <div id="error-modal" class="modal-overlay">
-        <div class="card modal-box" style="max-width: 500px; width: 90%; background: var(--surface-solid); border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.15); padding: 32px;">
-            <h3 style="color: var(--danger); display: flex; align-items: center; gap: 10px; font-size: 1.25rem; margin-bottom: 16px;">
-                <i class="fa-solid fa-triangle-exclamation"></i> <span id="error-modal-title-text">Action Required</span>
-            </h3>
-            <p id="error-modal-message" class="text-muted" style="white-space: pre-wrap; line-height: 1.6; font-size: 14px; margin-bottom: 24px;"></p>
-            <button class="btn" style="width: 100%; background: var(--fg); color: var(--bg);" onclick="closeErrorModal()">Understood</button>
+        <div class="card modal-box" style="max-width: 450px; width: 90%; text-align: center;">
+            <div style="font-size: 24px; color: var(--fg); margin-bottom: 16px;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 12px;">Action Required</h3>
+            <p id="error-modal-message" class="text-muted" style="white-space: pre-wrap; font-size: 14px; margin-bottom: 24px;"></p>
+            <button class="btn btn-primary" style="width: 100%;" onclick="closeErrorModal()">Understood</button>
         </div>
     </div>
 
-    <!-- Custom Confirm Modal -->
     <div id="confirm-modal" class="modal-overlay">
-        <div class="card modal-box" style="max-width: 400px; width: 90%; background: var(--surface-solid); border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.15); padding: 32px; text-align: center;">
-            <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(239, 68, 68, 0.1); color: var(--danger); display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 20px;">
-                <i class="fa-solid fa-trash-can"></i>
-            </div>
-            <h3 style="font-size: 1.25rem; margin-bottom: 12px;">Delete Student?</h3>
+        <div class="card modal-box" style="max-width: 400px; width: 90%; text-align: center;">
+            <div style="font-size: 24px; color: var(--money-out); margin-bottom: 16px;"><i class="fa-solid fa-trash-can"></i></div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 12px;">Delete Student</h3>
             <p class="text-muted" style="font-size: 14px; margin-bottom: 24px;">This action cannot be undone. All funds and transaction history will be permanently deleted.</p>
             <div class="flex gap-4">
-                <button class="btn btn-outline" style="flex: 1;" onclick="closeConfirmModal()">Cancel</button>
-                <button class="btn btn-danger" style="flex: 1;" onclick="executeDelete()">Yes, Delete</button>
+                <button class="btn" style="flex: 1;" onclick="closeConfirmModal()">Cancel</button>
+                <button class="btn btn-danger" style="flex: 1;" onclick="executeDelete()">Confirm</button>
             </div>
         </div>
     </div>
 
-    <!-- Custom Confirm Date Delete Modal -->
     <div id="confirm-date-modal" class="modal-overlay">
-        <div class="card modal-box" style="max-width: 400px; width: 90%; background: var(--surface-solid); border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.15); padding: 32px; text-align: center;">
-            <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(239, 68, 68, 0.1); color: var(--danger); display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 20px;">
-                <i class="fa-solid fa-calendar-xmark"></i>
-            </div>
-            <h3 style="font-size: 1.25rem; margin-bottom: 12px;">Delete Day's Data?</h3>
-            <p class="text-muted" style="font-size: 14px; margin-bottom: 24px;">This will permanently delete ALL transactions made on <strong id="delete-date-text"></strong> for EVERY student. Balances will be recalculated.</p>
+        <div class="card modal-box" style="max-width: 400px; width: 90%; text-align: center;">
+            <div style="font-size: 24px; color: var(--money-out); margin-bottom: 16px;"><i class="fa-solid fa-calendar-xmark"></i></div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 12px;">Purge Day's Data</h3>
+            <p class="text-muted" style="font-size: 14px; margin-bottom: 24px;">Permanently delete ALL transactions made on <strong id="delete-date-text" style="color:var(--fg);"></strong>.</p>
             <div class="flex gap-4">
-                <button class="btn btn-outline" style="flex: 1;" onclick="closeConfirmDateModal()">Cancel</button>
-                <button class="btn btn-danger" style="flex: 1;" onclick="executeDateDelete()">Yes, Delete All</button>
+                <button class="btn" style="flex: 1;" onclick="closeConfirmDateModal()">Cancel</button>
+                <button class="btn btn-danger" style="flex: 1;" onclick="executeDateDelete()">Confirm</button>
             </div>
         </div>
     </div>
 
-    <!-- Admin Settings Modal -->
-    <div id="admin-settings-modal" class="modal-overlay">
-        <div class="card modal-box" style="max-width: 400px; width: 90%; background: var(--surface-solid); padding: 32px; text-align: left;">
-            <h3 style="font-size: 1.25rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-user-shield text-muted"></i> Admin Account
-            </h3>
-            
-            <label class="text-muted" style="font-size: 13px; font-weight: 500; margin-bottom: 8px; display: block;">Username</label>
-            <input type="text" id="setting-admin-user" placeholder="New Username">
-            
-            <label class="text-muted" style="font-size: 13px; font-weight: 500; margin-bottom: 8px; display: block;">Current Password</label>
-            <div class="password-wrapper">
-                <input type="password" id="setting-admin-pass-old" placeholder="Current Password">
-                <i class="fa-solid fa-eye password-toggle" onclick="togglePasswordVisibility('setting-admin-pass-old', this)"></i>
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-overlay">
+        <div class="card modal-box" style="max-width: 400px; width: 90%;">
+            <div class="flex justify-between items-center mb-6">
+                <h3 style="font-size: 1.25rem; font-weight: 600; margin: 0;"><i class="fa-solid fa-gear text-muted"></i> System Setup</h3>
+                <button class="btn-icon" onclick="closeSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <label class="text-muted" style="font-size: 13px; font-weight: 500; margin-bottom: 8px; display: block;">New Password</label>
-            <div class="password-wrapper">
-                <input type="password" id="setting-admin-pass-new" placeholder="New Password">
-                <i class="fa-solid fa-eye password-toggle" onclick="togglePasswordVisibility('setting-admin-pass-new', this)"></i>
-            </div>
+            <label class="text-muted" style="font-size: 12px; font-weight: 500; margin-bottom: 4px; display: block;">Madrassa / App Name</label>
+            <input type="text" id="set-app-name" placeholder="FESTIE">
             
+            <label class="text-muted" style="font-size: 12px; font-weight: 500; margin-bottom: 4px; display: block; margin-top: 12px;">Admin Username</label>
+            <input type="text" id="set-admin-user" placeholder="admin">
+            
+            <label class="text-muted" style="font-size: 12px; font-weight: 500; margin-bottom: 4px; display: block; margin-top: 12px;">Admin Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="set-admin-pass" placeholder="admin">
+                <i class="fa-solid fa-eye password-toggle" onclick="togglePasswordVisibility('set-admin-pass', this)"></i>
+            </div>
+
             <div class="flex gap-4 mt-6">
-                <button class="btn btn-outline" style="flex: 1;" onclick="closeAdminSettings()">Cancel</button>
-                <button class="btn btn-success" style="flex: 1;" onclick="saveAdminSettings()">Save Changes</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Installation & Shortcut Modal -->
-    <div id="install-modal" class="modal-overlay">
-        <div class="card modal-box" style="max-width: 450px; width: 90%; background: var(--surface-solid); padding: 32px; text-align: center;">
-            <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); color: var(--info); display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 20px;">
-                <i class="fa-solid fa-laptop-code"></i>
-            </div>
-            <h3 style="font-size: 1.25rem; margin-bottom: 12px;">Install Application</h3>
-            <p class="text-muted" style="font-size: 14px; margin-bottom: 16px; text-align: left;">
-                To run Money Flow as a standalone desktop or mobile app:
-            </p>
-            <ul style="text-align: left; font-size: 14px; margin-bottom: 24px; color: var(--muted); padding-left: 20px; line-height: 1.6;">
-                <li style="margin-bottom: 6px;"><b>Desktop (Windows/Mac):</b> Look for the <b>Install</b> icon <i class="fa-solid fa-display"></i> in the right side of your browser's address bar. This creates a Start Menu entry and runs it like a native <b>.exe</b> app.</li>
-                <li style="margin-bottom: 6px;"><b>iOS (Safari):</b> Tap <b>Share</b> <i class="fa-solid fa-arrow-up-from-bracket"></i>, then <b>Add to Home Screen</b> <i class="fa-regular fa-square-plus"></i>.</li>
-                <li><b>Android:</b> Open Menu (⋮), tap <b>Install App</b>.</li>
-            </ul>
-            <div class="flex gap-3 flex-wrap">
-                <button class="btn btn-outline" style="flex: 1; min-width: 150px; font-size: 14px;" onclick="downloadShortcut()"><i class="fa-solid fa-link"></i> Save as Link</button>
-                <button class="btn" style="flex: 1; min-width: 150px; background: var(--info); border-color: var(--info); font-size: 14px;" onclick="closeInstallModal()">Got it</button>
+                <button class="btn" style="flex: 1;" onclick="closeSettingsModal()">Cancel</button>
+                <button class="btn btn-primary" style="flex: 1;" onclick="saveSettings()">Save Changes</button>
             </div>
         </div>
     </div>
 
     <!-- Navigation -->
-    <nav>
+    <nav class="no-print">
         <div class="logo" onclick="navTo('landing')">
-            <i class="fa-solid fa-infinity"></i> FLOW
-            <span class="live-badge" title="Connected to Real-time Database">
-                <span class="live-dot"></span> LIVE
-            </span>
+            <div style="width: 12px; height: 12px; background: var(--accent-yellow); border-radius: 2px;"></div>
+            <span id="app-logo-text">FESTIE</span>
         </div>
-        <div id="nav-actions" class="flex gap-2">
-            <!-- PWA Install Button -->
-            <button class="btn btn-outline" id="nav-install-btn" onclick="installApp()" style="padding: 10px 16px; font-size: 14px;">
-                <i class="fa-solid fa-download"></i> <span class="hide-mobile">Install App</span>
-            </button>
+
+        <div id="nav-actions" class="flex gap-2 items-center">
+            <button class="btn btn-ghost hidden" id="nav-logout-btn" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign out</button>
             
-            <!-- Logout button visible only when logged in -->
-            <button class="btn btn-outline hidden" id="nav-logout-btn" onclick="logout()" style="padding: 10px 16px; font-size: 14px;">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <!-- Animated Nav Buttons -->
+            <button class="btn-anim btn-md" id="nav-admin-login-btn" onclick="navTo('admin-auth')">
+                <p>Admin Setup</p>
+                <i class="fa-solid fa-shield-halved"></i>
+            </button>
+            <button class="btn-anim-filled btn-md" id="nav-student-login-btn" onclick="navTo('student-auth')">
+                <p>Access Portal</p>
+                <i class="fa-solid fa-user-graduate"></i>
             </button>
         </div>
     </nav>
 
-    <!-- 1. Creative Minimal Landing View -->
-    <div id="view-landing" class="view container text-center" style="padding-top: 8vh;">
-        <div class="hero-badge"><i class="fa-solid fa-bolt"></i> Real-time Financial Engine</div>
-        <h1 class="mb-4">Kill the rush,<br>let the <span class="text-gradient">funds flow.</span></h1>
-        <p class="mb-8 text-muted" style="max-width: 550px; margin: 0 auto 40px; font-size: 1.1rem;">
-            Manage registrations, scheduling, and fund transfers — all in one seamless platform. No paperwork, no chaos. Just smooth operations, every time.
+    <!-- 1. Landing View -->
+    <div id="view-landing" class="view container text-center" style="padding-top: 12vh;">
+        <h1 class="mb-4">Minimal flow.<br>Maximum impact.</h1>
+        <p class="mb-8 text-muted" style="max-width: 500px; margin: 0 auto 40px; font-size: 1.1rem;">
+            A precise financial engine to manage registrations, scheduling, and liquidity for modern fests.
         </p>
         
-        <div class="flex items-center justify-center gap-4 flex-wrap" style="max-width: 400px; margin: 0 auto;">
-            <!-- Button Using Uiverse Styling -->
-            <button class="btn-uiverse" style="flex: 1;" onclick="navTo('student-auth')">
-                <i class="fa-solid fa-wallet"></i> Access Wallet Dashboard
+        <div class="flex items-center gap-4 flex-wrap mt-6" style="justify-content: center;">
+            <!-- Animated Landing Buttons -->
+            <button class="btn-anim-filled btn-lg" onclick="navTo('student-auth')">
+                <p>Access Portal</p>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <button class="btn-anim btn-lg" onclick="navTo('admin-auth')">
+                <p>Admin Setup</p>
+                <i class="fa-solid fa-arrow-right"></i>
             </button>
         </div>
     </div>
 
-    <!-- 2. Student Auth View (Contains Admin Entry) -->
+    <!-- 2. Student Auth View -->
     <div id="view-student-auth" class="view container hidden">
-        <div class="auth-wrapper card text-center">
-            <div style="width: 60px; height: 60px; background: rgba(0,0,0,0.03); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 24px;">
-                <i class="fa-solid fa-user-graduate"></i>
-            </div>
-            <h2 class="mb-2">Student Login</h2>
-            <p class="mb-8 text-muted">Enter your unique student ID to access your real-time wallet.</p>
-            
-            <input type="number" id="auth-student-id" placeholder="Student ID (Username)">
-            <button class="btn" style="width: 100%; margin-top: 8px;" onclick="handleStudentLogin()">Access Account</button>
-            <button class="btn btn-ghost mt-4 mb-4" style="width: 100%;" onclick="navTo('landing')">Cancel</button>
-
-            <!-- Admin Access moved here as requested -->
-            <div style="border-top: 1px solid var(--border); padding-top: 20px; margin-top: 10px;">
-                <p class="text-muted" style="font-size: 13px; margin-bottom: 10px;">Organization Management</p>
-                <button class="btn btn-outline" style="width: 100%; font-size: 14px;" onclick="navTo('admin-auth')">
-                    <i class="fa-solid fa-shield-halved"></i> Admin Portal Login
-                </button>
-            </div>
+        <div class="auth-wrapper text-center">
+            <div style="font-size: 32px; color: var(--fg); margin-bottom: 16px;"><i class="fa-solid fa-wallet"></i></div>
+            <h2 class="mb-2">Student Portal</h2>
+            <p class="mb-8 text-muted" style="font-size: 14px;">Enter your unique ID to access your wallet.</p>
+            <input type="number" id="auth-student-id" placeholder="Student ID">
+            <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="handleStudentLogin()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Access Account</button>
+            <button class="btn btn-ghost mt-4" style="width: 100%;" onclick="navTo('landing')">Cancel</button>
         </div>
     </div>
 
     <!-- 3. Admin Auth View -->
     <div id="view-admin-auth" class="view container hidden">
-        <div class="auth-wrapper card">
-            <h2 class="mb-2 text-center">Admin Security</h2>
-            <p class="mb-8 text-muted text-center">Enter administrative credentials.</p>
-            <input type="text" id="auth-admin-user" placeholder="Username">
-            
+        <div class="auth-wrapper text-center">
+            <div style="font-size: 32px; color: var(--fg); margin-bottom: 16px;"><i class="fa-solid fa-lock"></i></div>
+            <h2 class="mb-2">System Access</h2>
+            <p class="mb-8 text-muted" style="font-size: 14px;">Enter administrative credentials.</p>
+            <input type="text" id="auth-admin-user" placeholder="Username" style="text-align: left;">
             <div class="password-wrapper">
-                <input type="password" id="auth-admin-pass" placeholder="Password">
+                <input type="password" id="auth-admin-pass" placeholder="Password" style="text-align: left;">
                 <i class="fa-solid fa-eye password-toggle" onclick="togglePasswordVisibility('auth-admin-pass', this)"></i>
             </div>
-
-            <button class="btn" style="width: 100%; margin-top: 8px;" onclick="handleAdminLogin()">Verify Identity</button>
-            <button class="btn btn-ghost mt-4" style="width: 100%;" onclick="navTo('student-auth')">Back</button>
-        </div>
-    </div>
-
-    <!-- 4. Admin Biometric Simulation -->
-    <div id="view-admin-bio" class="view container hidden">
-        <div class="auth-wrapper card biometric-box">
-            <h2 class="mb-2">Identity Verification</h2>
-            <p class="mb-8 text-muted">Awaiting biometric confirmation.</p>
-            
-            <div class="scanner-container" id="scanner">
-                <i class="fa-solid fa-fingerprint"></i>
-                <div class="laser"></div>
-            </div>
-            
-            <p id="bio-status" class="text-muted" style="font-weight: 500;">Waiting for scan...</p>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="handleAdminLogin()"><i class="fa-solid fa-shield-check"></i> Authenticate</button>
+            <button class="btn btn-ghost mt-4" style="width: 100%;" onclick="navTo('landing')">Back</button>
         </div>
     </div>
 
@@ -510,203 +413,193 @@
     <div id="view-admin-dash" class="view container hidden">
         <div class="flex justify-between items-center mb-8">
             <div>
-                <h2 style="font-size: 2rem;">Overview</h2>
-                <p class="text-muted">Manage your organization's financials.</p>
+                <h2 style="font-size: 1.8rem;">Overview</h2>
+                <p class="text-muted" style="font-size: 14px;">Financial engine dashboard.</p>
             </div>
             <div class="flex gap-2">
-                <button class="btn btn-outline" style="width: auto;" onclick="openAdminSettings()"><i class="fa-solid fa-gear"></i> <span class="hide-mobile">Account</span></button>
-                <button class="btn btn-outline" style="width: auto;" onclick="exportCSV()"><i class="fa-solid fa-download"></i> <span class="hide-mobile">Export</span></button>
+                <button class="btn" onclick="openSettingsModal()"><i class="fa-solid fa-gear"></i> Setup</button>
+                <button class="btn" onclick="navTo('admin-reports')"><i class="fa-solid fa-chart-pie"></i> View Reports</button>
             </div>
         </div>
 
-        <!-- 4 Stat Cards as requested -->
         <div class="grid grid-cols-4 mb-8">
             <div class="card" style="padding: 24px;">
-                <p class="text-muted" style="font-weight: 500; font-size: 13px; text-transform: uppercase;"><i class="fa-solid fa-users"></i> Students</p>
-                <h2 id="dash-total-students" style="font-size: 2rem; margin-top: 8px;">0</h2>
+                <p class="text-muted" style="font-weight: 500; font-size: 12px; margin-bottom: 8px;"><i class="fa-solid fa-users"></i> Students</p>
+                <h2 id="dash-total-students" style="font-size: 2rem; font-weight: 400;">0</h2>
             </div>
             <div class="card" style="padding: 24px;">
-                <p class="text-muted" style="font-weight: 500; font-size: 13px; text-transform: uppercase;"><i class="fa-solid fa-vault"></i> Managed Funds</p>
-                <h2 id="dash-total-funds" class="text-gradient" style="font-size: 2rem; margin-top: 8px;">$0</h2>
+                <p class="text-muted" style="font-weight: 500; font-size: 12px; margin-bottom: 8px;"><i class="fa-solid fa-vault"></i> Managed Funds</p>
+                <h2 id="dash-total-funds" style="font-size: 2rem; font-weight: 400;">₹0</h2>
             </div>
             <div class="card" style="padding: 24px;">
-                <p class="text-muted" style="font-weight: 500; font-size: 13px; text-transform: uppercase; color: var(--success);"><i class="fa-solid fa-arrow-trend-up"></i> Total Credit</p>
-                <h2 id="dash-total-credit" style="font-size: 2rem; margin-top: 8px;">$0</h2>
+                <p style="font-weight: 500; font-size: 12px; margin-bottom: 8px; color: var(--money-in);"><i class="fa-solid fa-arrow-turn-up"></i> Total Credit</p>
+                <h2 id="dash-total-credit" style="font-size: 2rem; font-weight: 400;">₹0</h2>
             </div>
             <div class="card" style="padding: 24px;">
-                <p class="text-muted" style="font-weight: 500; font-size: 13px; text-transform: uppercase; color: var(--danger);"><i class="fa-solid fa-arrow-trend-down"></i> Total Debit</p>
-                <h2 id="dash-total-debit" style="font-size: 2rem; margin-top: 8px;">$0</h2>
+                <p style="font-weight: 500; font-size: 12px; margin-bottom: 8px; color: var(--money-out);"><i class="fa-solid fa-arrow-turn-down"></i> Total Debit</p>
+                <h2 id="dash-total-debit" style="font-size: 2rem; font-weight: 400;">₹0</h2>
             </div>
         </div>
 
         <div class="grid grid-cols-2 mb-8">
-            <!-- Add/Update Student -->
             <div class="card" id="form-register-card">
-                <h3 style="margin-bottom: 24px;" id="reg-title"><i class="fa-solid fa-user-plus text-muted" style="margin-right:8px;"></i> Register Student</h3>
+                <h3 style="margin-bottom: 24px; font-weight: 600;" id="reg-title"><i class="fa-solid fa-user-plus text-muted"></i> Register Identity</h3>
                 <input type="text" id="reg-name" placeholder="Full Name">
                 <input type="text" id="reg-class" placeholder="Class / Grade">
-                <input type="number" id="reg-username" placeholder="Username (Number ID)">
-                
+                <input type="number" id="reg-username" placeholder="Unique ID Number">
                 <div class="flex gap-2" style="margin-top: 8px;">
-                    <button class="btn" id="btn-register" style="flex: 1;" onclick="registerStudent()">Create Account</button>
-                    <button class="btn btn-outline hidden" id="btn-cancel-edit" onclick="cancelEdit()" style="padding: 14px;"><i class="fa-solid fa-xmark"></i></button>
+                    <button class="btn btn-primary" id="btn-register" style="flex: 1;" onclick="registerStudent()">Create Account</button>
                 </div>
             </div>
 
-            <!-- Transaction -->
             <div class="card">
-                <h3 style="margin-bottom: 24px;"><i class="fa-solid fa-money-bill-transfer text-muted" style="margin-right:8px;"></i> Process Transfer</h3>
+                <h3 style="margin-bottom: 24px; font-weight: 600;"><i class="fa-solid fa-money-bill-transfer text-muted"></i> Process Ledger</h3>
+                <input list="student-list" id="trans-user" placeholder="Search by ID or Name...">
+                <datalist id="student-list"></datalist>
+                <input type="number" id="trans-amount" placeholder="Amount (₹)">
                 
-                <!-- Searchable Dropdown natively implemented with datalist -->
-                <input list="student-list" id="trans-user" placeholder="Search student by Name or ID...">
-                <datalist id="student-list">
-                    <!-- Filled by JS -->
-                </datalist>
+                <label style="font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; display: block;">Transaction Date (Leave empty for today)</label>
+                <input type="date" id="trans-date">
 
-                <input type="number" id="trans-amount" placeholder="Amount ($)">
                 <div class="flex gap-4" style="margin-top: 8px;">
-                    <button class="btn" style="flex: 1; background: var(--success); border-color: var(--success);" onclick="processTransaction('upload')">
-                        <i class="fa-solid fa-arrow-up"></i> Deposit
-                    </button>
-                    <button class="btn" style="flex: 1; background: var(--danger); border-color: var(--danger);" onclick="processTransaction('withdraw')">
-                        <i class="fa-solid fa-arrow-down"></i> Withdraw
-                    </button>
+                    <button class="btn btn-success" style="flex: 1;" onclick="processTransaction('upload')"><i class="fa-solid fa-arrow-up"></i> Deposit</button>
+                    <button class="btn btn-danger" style="flex: 1;" onclick="processTransaction('withdraw')"><i class="fa-solid fa-arrow-down"></i> Withdraw</button>
                 </div>
             </div>
         </div>
-
-        <!-- Analytics Button (Uiverse Themed Interaction) -->
-        <button class="btn-uiverse" style="width: 100%; padding: 20px; font-size: 1.1rem; background: var(--fg); border-radius: var(--radius);" onclick="navTo('admin-analytics')">
-            <i class="fa-solid fa-chart-pie" style="margin-right: 8px; font-size: 1.4rem;"></i> Open Analytics & Roster Database
-        </button>
     </div>
 
-    <!-- 6. Admin Analytics View -->
-    <div id="view-admin-analytics" class="view container hidden">
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h2 style="font-size: 2rem;">Analytics Center</h2>
-                <p class="text-muted">Deep dive into organization data.</p>
-            </div>
-            <button class="btn btn-outline" style="width: auto;" onclick="navTo('admin-dash')"><i class="fa-solid fa-arrow-left"></i> Back to Dash</button>
+    <!-- Admin Reports View -->
+    <div id="view-admin-reports" class="view container hidden">
+        
+        <div class="tab-nav no-print">
+            <button class="tab-btn active" onclick="switchReportTab(event, 'rep-student')"><i class="fa-solid fa-user"></i> Student Profile</button>
+            <button class="tab-btn" onclick="switchReportTab(event, 'rep-class')"><i class="fa-solid fa-users-rectangle"></i> Class Ledger</button>
+            <button class="tab-btn" onclick="switchReportTab(event, 'rep-total')"><i class="fa-solid fa-chart-line"></i> Global Summary</button>
         </div>
 
-        <div class="card" style="padding: 0; overflow: hidden;">
-            <div class="tab-nav" style="padding: 0 20px; margin-bottom: 0;">
-                <button class="tab-btn active" onclick="switchTab(event, 'tab-students')"><i class="fa-solid fa-users"></i> Students</button>
-                <button class="tab-btn" onclick="switchTab(event, 'tab-transactions')"><i class="fa-solid fa-clock-rotate-left"></i> Transaction History</button>
-                <button class="tab-btn" onclick="switchTab(event, 'tab-database')"><i class="fa-solid fa-database"></i> Database Summary</button>
+        <div id="print-area">
+            
+            <!-- Tab 1: Student-wise -->
+            <div id="rep-student" class="report-tab-content active">
+                <div class="flex gap-4 mb-6 no-print">
+                    <input list="student-list" id="report-student-input" placeholder="Search by ID or Name" style="margin-bottom: 0; flex: 2; max-width: 400px;">
+                    <button class="btn btn-primary" onclick="generateStudentReport()" style="padding: 0 24px;"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                    <button class="btn" onclick="window.print()" style="padding: 0 24px;"><i class="fa-solid fa-print"></i> Print</button>
+                </div>
+                <div id="student-report-output" class="card" style="padding: 40px;">
+                    <p class="text-muted text-center" style="padding: 20px;">Search an identity to generate ledger.</p>
+                </div>
             </div>
 
-            <div style="padding: 32px;">
-                <!-- Tab 1: Students -->
-                <div id="tab-students" class="tab-content active">
-                    <div style="overflow-x: auto;">
-                        <table>
-                            <thead><tr><th>ID</th><th>Name</th><th>Class</th><th>Balance</th><th style="text-align:right;">Actions</th></tr></thead>
-                            <tbody id="table-students">
-                                <!-- Filled by JS -->
-                            </tbody>
-                        </table>
-                    </div>
+            <!-- Tab 2: Class-wise -->
+            <div id="rep-class" class="report-tab-content">
+                <div class="flex gap-4 mb-6 no-print">
+                    <select id="report-class-input" style="margin-bottom: 0; flex: 2; max-width: 400px;">
+                        <option value="">Select Class...</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="generateClassReport()" style="padding: 0 24px;"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                    <button class="btn" onclick="window.print()" style="padding: 0 24px;"><i class="fa-solid fa-print"></i> Print</button>
                 </div>
-
-                <!-- Tab 2: Transactions -->
-                <div id="tab-transactions" class="tab-content">
-                    <div style="overflow-x: auto;">
-                        <table>
-                            <thead><tr><th>Date</th><th>Student</th><th>Type</th><th>Amount</th></tr></thead>
-                            <tbody id="table-all-transactions">
-                                <!-- Filled by JS -->
-                            </tbody>
-                        </table>
-                    </div>
+                <div id="class-report-output" class="card" style="padding: 40px;">
+                    <p class="text-muted text-center" style="padding: 20px;">Select a class to generate ledger.</p>
                 </div>
+            </div>
 
-                <!-- Tab 3: Database (With Date Filters and Full Breakdown) -->
-                <div id="tab-database" class="tab-content">
-                    
+            <!-- Tab 3: Daily Breakdown -->
+            <div id="rep-total" class="report-tab-content">
+                 <div class="flex justify-end mb-4 no-print">
+                    <button class="btn" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Report</button>
+                </div>
+                
+                <div class="card" style="padding: 40px;">
+                    <div style="margin-bottom: 32px;">
+                        <h2 style="font-size: 1.5rem; font-weight: 600;">Global Financial Summary</h2>
+                    </div>
+
                     <!-- Date Picker Filter Section -->
-                    <div class="flex gap-4 mb-6 items-center flex-wrap" style="background: var(--surface-solid); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border);">
+                    <div class="flex gap-4 mb-8 items-center flex-wrap no-print" style="padding-bottom: 24px; border-bottom: 1px solid var(--border);">
                         <div style="flex: 1; min-width: 150px;">
-                            <label class="text-muted" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">Start Date</label>
+                            <label class="text-muted" style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 8px;">Start Date</label>
                             <input type="date" id="db-start-date" style="margin-bottom: 0; padding: 10px 14px;">
                         </div>
                         <div style="flex: 1; min-width: 150px;">
-                            <label class="text-muted" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">End Date</label>
+                            <label class="text-muted" style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 8px;">End Date</label>
                             <input type="date" id="db-end-date" style="margin-bottom: 0; padding: 10px 14px;">
                         </div>
                         <div style="display: flex; gap: 8px; margin-top: 24px;">
-                            <button class="btn btn-outline" style="padding: 10px 20px;" onclick="filterDatabaseByDate()"><i class="fa-solid fa-filter"></i> Filter</button>
-                            <button class="btn btn-ghost" style="padding: 10px 20px;" onclick="resetDatabaseFilter()">Reset</button>
+                            <button class="btn btn-primary" style="padding: 10px 20px;" onclick="filterDatabaseByDate()"><i class="fa-solid fa-filter"></i> Filter</button>
+                            <button class="btn btn-ghost" style="padding: 10px 20px;" onclick="resetDatabaseFilter()"><i class="fa-solid fa-rotate-right"></i> Reset</button>
                         </div>
                     </div>
 
-                    <!-- Top Summary Cards -->
                     <div class="grid grid-cols-3 mb-8">
-                        <div class="card" style="background: var(--surface-solid); border: 1px solid var(--border);">
-                            <p class="text-muted" style="font-weight: 500; font-size: 13px; text-transform: uppercase; color: var(--success);"><i class="fa-solid fa-arrow-turn-up"></i> Total Deposited</p>
-                            <h2 id="db-total-deposit" style="font-size: 2.5rem; margin-top: 8px;">$0</h2>
+                        <div class="report-summary-box">
+                            <p><i class="fa-solid fa-arrow-turn-up text-success"></i> Total Deposited</p>
+                            <h3 class="text-success" id="db-total-deposit">₹0</h3>
                         </div>
-                        <div class="card" style="background: var(--surface-solid); border: 1px solid var(--border);">
-                            <p class="text-muted" style="font-weight: 500; font-size: 13px; text-transform: uppercase; color: var(--danger);"><i class="fa-solid fa-arrow-turn-down"></i> Total Withdrawn</p>
-                            <h2 id="db-total-withdraw" style="font-size: 2.5rem; margin-top: 8px;">$0</h2>
+                        <div class="report-summary-box">
+                            <p><i class="fa-solid fa-arrow-turn-down text-danger"></i> Total Withdrawn</p>
+                            <h3 class="text-danger" id="db-total-withdraw">₹0</h3>
                         </div>
-                        <div class="card" style="background: var(--surface-solid); border: 1px solid var(--border);">
-                            <p class="text-muted" style="font-weight: 500; font-size: 13px; text-transform: uppercase;"><i class="fa-solid fa-vault"></i> Net Balance</p>
-                            <h2 id="db-total-balance" class="text-gradient" style="font-size: 2.5rem; margin-top: 8px;">$0</h2>
+                        <div class="report-summary-box">
+                            <p><i class="fa-solid fa-vault text-muted"></i> Net Balance</p>
+                            <h3 style="color: var(--fg);" id="db-total-balance">₹0</h3>
                         </div>
                     </div>
 
-                    <!-- Daily Breakdown Table Section -->
-                    <h3 style="margin-bottom: 20px; font-size: 1.2rem;"><i class="fa-solid fa-calendar-day text-muted"></i> Daily Breakdown</h3>
-                    <div style="overflow-x: auto; background: var(--surface-solid); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px;">
+                    <h3 style="font-size: 1.1rem; margin-top: 40px; margin-bottom: 16px; font-weight: 600;"><i class="fa-solid fa-receipt text-muted"></i> Daily Ledger</h3>
+                    <div style="overflow-x: auto;">
                         <table style="margin-top: 0;">
                             <thead>
                                 <tr>
                                     <th>Date</th>
-                                    <th>Transactions</th>
-                                    <th>Total Deposited</th>
-                                    <th>Total Withdrawn</th>
-                                    <th style="text-align:right;">Daily Balance</th>
-                                    <th style="text-align:right;">Actions</th>
+                                    <th>Total Deposit</th>
+                                    <th>Total Withdraw</th>
+                                    <th style="text-align:right;">Balance of Day</th>
+                                    <th class="no-print" style="text-align:right; width: 60px;"></th>
                                 </tr>
                             </thead>
                             <tbody id="table-daily-summary">
-                                <!-- Filled by JS -->
+                                <!-- Filled by JS based strictly on requested schema -->
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="text-center mt-6 no-print">
+            <button class="btn btn-ghost" onclick="navTo('admin-dash')"><i class="fa-solid fa-arrow-left"></i> Return to Overview</button>
+        </div>
     </div>
 
     <!-- 7. Student Dashboard -->
-    <div id="view-student-dash" class="view container hidden">
-        <div class="card" style="max-width: 600px; margin: 0 auto; padding: 50px 40px;">
+    <div id="view-student-dash" class="view container hidden no-print">
+        <div class="card" style="max-width: 500px; margin: 0 auto; padding: 40px;">
             <div class="flex items-center gap-4 mb-8 pb-6" style="border-bottom: 1px solid var(--border);">
-                <div style="width: 70px; height: 70px; background: linear-gradient(135deg, rgba(255,94,98,0.1), rgba(255,153,102,0.1)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--accent-start);">
-                    <i class="fa-solid fa-user-astronaut"></i>
-                </div>
                 <div>
-                    <h2 id="st-name" style="font-size: 1.8rem; margin-bottom: 4px;">Name</h2>
-                    <p class="text-muted" id="st-details" style="font-size: 1rem;"><i class="fa-solid fa-graduation-cap"></i> Class | <i class="fa-solid fa-id-badge"></i> ID</p>
+                    <h2 id="st-name" style="font-size: 1.8rem; margin-bottom: 4px; font-weight: 600;">Name</h2>
+                    <p class="text-muted" id="st-details" style="font-size: 14px;">ID &nbsp;|&nbsp; Class</p>
                 </div>
             </div>
             
-            <div class="text-center" style="background: var(--surface-solid); padding: 40px; border-radius: 24px; border: 1px solid var(--border); box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);">
-                <p class="text-muted" style="font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;"><i class="fa-solid fa-wallet"></i> Available Balance</p>
-                <h1 id="st-balance" class="text-gradient" style="font-size: 5rem; margin: 0;">$0</h1>
+            <div class="text-center mb-8">
+                <p class="text-muted" style="font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Available Liquidity</p>
+                <h1 style="font-size: 4rem; margin: 0; font-weight: 400; color: var(--fg);" id="st-balance">₹0</h1>
             </div>
 
-            <div style="text-align: left; margin-top: 40px;">
-                <h3 style="font-size: 1.2rem; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-clock-rotate-left text-muted"></i> Recent Activity</h3>
-                <table style="margin-top: 15px;">
+            <div style="text-align: left; margin-top: 32px;">
+                <h3 style="font-size: 1rem; font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 12px;"><i class="fa-solid fa-receipt text-muted"></i> Recent Ledger</h3>
+                <table style="margin-top: 8px;">
+                    <thead id="st-transactions-header"></thead>
                     <tbody id="st-transactions">
                         <!-- Filled by JS -->
                     </tbody>
                 </table>
+            </div>
+            
+            <div class="text-center mt-8">
+                <button class="btn" style="width: 100%;" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign out</button>
             </div>
         </div>
     </div>
@@ -714,50 +607,35 @@
     <!-- Application Logic & Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ==========================================
-        // PWA Setup (Robust Mobile/Desktop Installation)
+        // PWA Setup
         // ==========================================
-        const svgIconBase64 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2ZmNWU2MiIvPjx0ZXh0IHg9IjUwIiB5PSI2NSIgZm9udC1zaXplPSI0MCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIj5GPC90ZXh0Pjwvc3ZnPg==";
-        
+        const svgIconBase64 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjUwIiB5PSI2NSIgZm9udC1zaXplPSI0MCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIj5GPC90ZXh0Pjwvc3ZnPg==";
         const setupPWA = () => {
             const manifestJSON = {
                 "name": "Money Flow Financial Engine",
                 "short_name": "Money Flow",
                 "start_url": window.location.href,
                 "display": "standalone",
-                "background_color": "#fafafa",
-                "theme_color": "#ff5e62",
+                "background_color": "#ffffff",
+                "theme_color": "#ffffff",
                 "icons": [{ "src": svgIconBase64, "sizes": "192x192 512x512", "type": "image/svg+xml" }]
             };
-            
-            const manifestString = encodeURIComponent(JSON.stringify(manifestJSON));
-            const manifestUrl = 'data:application/manifest+json;charset=utf-8,' + manifestString;
-            
-            const manifestLink = document.createElement('link');
-            manifestLink.rel = 'manifest';
-            manifestLink.href = manifestUrl;
-            document.head.appendChild(manifestLink);
-
-            const appleIcon = document.createElement('link');
-            appleIcon.rel = 'apple-touch-icon';
-            appleIcon.href = svgIconBase64;
-            document.head.appendChild(appleIcon);
-
+            const manifestUrl = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifestJSON));
+            const manifestLink = document.createElement('link'); manifestLink.rel = 'manifest'; manifestLink.href = manifestUrl; document.head.appendChild(manifestLink);
+            const appleIcon = document.createElement('link'); appleIcon.rel = 'apple-touch-icon'; appleIcon.href = svgIconBase64; document.head.appendChild(appleIcon);
             if ('serviceWorker' in navigator) {
-                const swCode = `self.addEventListener('fetch', (e) => {});`;
-                const swBlob = new Blob([swCode], {type: 'application/javascript'});
-                const swUrl = URL.createObjectURL(swBlob);
-                navigator.serviceWorker.register(swUrl).catch(() => {});
+                const swBlob = new Blob([`self.addEventListener('fetch', (e) => {});`], {type: 'application/javascript'});
+                navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
             }
         };
         setupPWA();
 
-        // 4. Smart Installation Prompt Logic & Desktop Shortcut Downloader
+        // Installation Logic
         let deferredPrompt;
-        
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); 
             deferredPrompt = e; 
@@ -765,43 +643,19 @@
 
         window.installApp = async () => {
             if (deferredPrompt) {
-                // If browser supports native popup (like Android Chrome)
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    showToast("App installing...", "success");
-                }
+                if (outcome === 'accepted') showToast("App installing...", "success");
                 deferredPrompt = null;
             } else {
-                // Shows a beautiful modal with manual Desktop/Mobile instructions
-                document.getElementById('install-modal').classList.add('active');
+                showToast("Install via browser settings.", "info");
             }
-        };
-
-        window.closeInstallModal = () => {
-            document.getElementById('install-modal').classList.remove('active');
-        };
-
-        // Generates and downloads a .url Desktop Shortcut file
-        window.downloadShortcut = () => {
-            const url = window.location.href;
-            const shortcutContent = `[InternetShortcut]\nURL=${url}\nIconIndex=0`;
-            const blob = new Blob([shortcutContent], { type: 'text/plain' });
-            const blobUrl = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.setAttribute('href', blobUrl);
-            a.setAttribute('download', 'Money_Flow.url');
-            a.click();
-            
-            showToast("Shortcut downloaded to Desktop.", "success");
-            closeInstallModal();
         };
 
         // ==========================================
         // Firebase Setup & Main Logic
         // ==========================================
-        const userFirebaseConfig = {
+        const firebaseConfig = {
             apiKey: "AIzaSyB622faxqeedwMeHSQHIm37c0Tymv9Ru3k",
             authDomain: "madrassa-managment.firebaseapp.com",
             projectId: "madrassa-managment",
@@ -810,95 +664,48 @@
             appId: "1:487540171265:web:7e10a977bc904b63f71600"
         };
 
-        // Use environment config when testing in Canvas to prevent network/CORS errors
-        const isCanvasEnv = typeof __firebase_config !== 'undefined';
-        const firebaseConfig = isCanvasEnv ? JSON.parse(__firebase_config) : userFirebaseConfig;
-        
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const storageAppId = typeof __app_id !== 'undefined' ? __app_id : "madrassa-managment";
+        const storageAppId = "madrassa-managment";
 
         let currentUser = null;
         let studentsData = [];
+        let globalConfig = { appName: 'FESTIE', adminUser: 'admin', adminPass: 'admin' };
         let loggedInStudentId = null; 
-        let unsubscribeRealtime = null;
-        let editingStudentId = null;
         let pendingDeleteId = null;
-        let pendingDeleteDate = null; // Used to track which Date is meant to be deleted globally
-        
-        // Expose transactions globally for Date Filtering
+        let pendingDeleteDate = null; 
         window.allTransactionsGlobal = [];
 
-        // Default Admin Credentials (Overwritten by Firestore if updated)
-        let adminCreds = { username: 'admin', password: 'admin' };
-
-        // --- Custom Toast System ---
+        // Utilities
         window.showToast = (message, type = 'info') => {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            
-            let icon = '<i class="fa-solid fa-circle-info"></i>';
-            if(type === 'success') icon = '<i class="fa-solid fa-circle-check"></i>';
-            if(type === 'error') icon = '<i class="fa-solid fa-circle-exclamation"></i>';
-
-            toast.innerHTML = `${icon} <span>${message}</span>`;
+            toast.innerHTML = `<span>${message}</span>`;
             container.appendChild(toast);
-            
             setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
         };
 
-        // --- Custom Modal Systems ---
         window.showErrorModal = (title, message) => {
-            document.getElementById('error-modal-title-text').textContent = title;
             document.getElementById('error-modal-message').textContent = message;
             document.getElementById('error-modal').classList.add('active');
         };
         window.closeErrorModal = () => document.getElementById('error-modal').classList.remove('active');
+        window.confirmDeleteDate = (dateStr) => { pendingDeleteDate = dateStr; document.getElementById('delete-date-text').textContent = dateStr; document.getElementById('confirm-date-modal').classList.add('active'); };
+        window.closeConfirmDateModal = () => { pendingDeleteDate = null; document.getElementById('confirm-date-modal').classList.remove('active'); };
 
-        // Confirm Single Student Deletion
-        window.confirmDelete = (id) => {
-            pendingDeleteId = id;
-            document.getElementById('confirm-modal').classList.add('active');
-        };
-        window.closeConfirmModal = () => {
-            pendingDeleteId = null;
-            document.getElementById('confirm-modal').classList.remove('active');
-        };
-
-        // Confirm Date Block Global Deletion
-        window.confirmDeleteDate = (dateStr) => {
-            pendingDeleteDate = dateStr;
-            document.getElementById('delete-date-text').textContent = dateStr;
-            document.getElementById('confirm-date-modal').classList.add('active');
-        };
-        window.closeConfirmDateModal = () => {
-            pendingDeleteDate = null;
-            document.getElementById('confirm-date-modal').classList.remove('active');
-        };
-
-        // --- Auth Setup ---
+        // Auth
         async function initAuth() {
             try {
-                if (isCanvasEnv && typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                await signInAnonymously(auth);
             } catch (error) {
                 console.error("Firebase Auth Error:", error);
                 document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => document.getElementById('loader').classList.add('hidden'), 500);
-                
-                if (error.code === 'auth/network-request-failed') {
-                    showErrorModal("Connection Failed", "Unable to connect to the Real-time Database.\n\nThis usually happens if your API Key has referrer restrictions that block this preview, or if you are offline.");
-                } else if (error.code === 'auth/configuration-not-found') {
-                    showErrorModal("Authentication Required", "Anonymous Auth is not enabled in your project.\n\nPlease enable it in Firebase Console.");
+                if (error.code === 'auth/network-request-failed' || error.code === 'auth/configuration-not-found') {
+                    showErrorModal("Connection Failed", "Ensure Anonymous Auth is enabled in Firebase Console.");
                 } else {
                     showToast("Failed to connect to real-time engine.", "error");
                 }
@@ -907,391 +714,325 @@
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
-            if (user) {
-                setupRealtimeListener();
-            }
+            if (user) setupRealtimeListener();
             document.getElementById('loader').style.opacity = '0';
             setTimeout(() => document.getElementById('loader').classList.add('hidden'), 500);
         });
-
         initAuth();
 
-        // --- Realtime Data ---
         function setupRealtimeListener() {
             if (!currentUser) return;
-            const studentsRef = collection(db, 'artifacts', storageAppId, 'public', 'data', 'students');
             
-            unsubscribeRealtime = onSnapshot(studentsRef, (snapshot) => {
+            // Listen to Config Settings
+            const configRef = doc(db, 'artifacts', storageAppId, 'public', 'data', 'config', 'main');
+            onSnapshot(configRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    globalConfig.appName = data.appName || 'FESTIE';
+                    globalConfig.adminUser = data.adminUser || 'admin';
+                    globalConfig.adminPass = data.adminPass || 'admin';
+                }
+                document.getElementById('app-logo-text').textContent = globalConfig.appName;
+            });
+
+            // Listen to Students
+            const studentsRef = collection(db, 'artifacts', storageAppId, 'public', 'data', 'students');
+            onSnapshot(studentsRef, (snapshot) => {
                 studentsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 updateAdminUI();
                 if (loggedInStudentId) updateStudentUI();
             }, (error) => {
-                console.error("Realtime fetch error:", error);
-                if (error.code === 'permission-denied' || error.message.includes('permissions')) {
-                    showErrorModal("Firestore Rules Required", "Your Firebase project is blocking read/write access.\n\nChange your Firestore Rules in Firebase Console to:\nallow read, write: if true;");
-                } else {
-                    showToast("Failed to sync data.", "error");
-                }
-            });
-
-            // Listen for Admin Setting Updates
-            const settingsRef = collection(db, 'artifacts', storageAppId, 'public', 'data', 'settings');
-            onSnapshot(settingsRef, (snapshot) => {
-                const credsDoc = snapshot.docs.find(d => d.id === 'admin_profile');
-                if (credsDoc) {
-                    adminCreds = credsDoc.data();
-                }
+                if (error.code === 'permission-denied') showErrorModal("Firestore Rules Required", "Change your Firestore Rules in Firebase Console to:\nallow read, write: if true;");
             });
         }
 
-        // --- UI Navigation ---
-        const views = ['landing', 'student-auth', 'admin-auth', 'admin-bio', 'admin-dash', 'admin-analytics', 'student-dash'];
-        
+        // Navigation
+        const views = ['landing', 'student-auth', 'admin-auth', 'admin-dash', 'admin-reports', 'student-dash'];
         window.navTo = (viewId) => {
             views.forEach(v => document.getElementById(`view-${v}`).classList.add('hidden'));
-            
             const target = document.getElementById(`view-${viewId}`);
-            target.classList.remove('hidden');
-            target.style.animation = 'none';
-            target.offsetHeight; 
-            target.style.animation = null; 
+            target.classList.remove('hidden'); target.style.animation = 'none'; target.offsetHeight; target.style.animation = null; 
 
+            const navAdminBtn = document.getElementById('nav-admin-login-btn');
+            const navStudentBtn = document.getElementById('nav-student-login-btn');
             const navLogout = document.getElementById('nav-logout-btn');
 
-            if (['landing', 'student-auth', 'admin-auth'].includes(viewId)) {
+            if (viewId === 'landing') {
                 navLogout.classList.add('hidden');
+                navAdminBtn.classList.remove('hidden');
+                navStudentBtn.classList.remove('hidden');
             } else {
-                if (viewId !== 'admin-bio') navLogout.classList.remove('hidden');
+                navAdminBtn.classList.add('hidden');
+                navStudentBtn.classList.add('hidden');
+                if (!['student-auth', 'admin-auth'].includes(viewId)) navLogout.classList.remove('hidden');
             }
             
             document.getElementById('auth-admin-user').value = '';
-            
-            // Reset password field and toggle securely
             const passInput = document.getElementById('auth-admin-pass');
-            if (passInput) {
-                passInput.value = '';
-                passInput.type = 'password';
-                const toggleIcon = document.querySelector('#auth-admin-pass + .password-toggle');
-                if (toggleIcon) {
-                    toggleIcon.classList.remove('fa-eye-slash');
-                    toggleIcon.classList.add('fa-eye');
-                }
-            }
-
+            if (passInput) { passInput.value = ''; passInput.type = 'password'; }
             document.getElementById('auth-student-id').value = '';
         };
 
-        window.switchTab = (event, tabId) => {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        window.switchReportTab = (event, tabId) => {
+            document.querySelectorAll('#view-admin-reports .report-tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#view-admin-reports .tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             event.currentTarget.classList.add('active');
+            if(tabId === 'rep-total') updateAdminUI(); 
         };
 
         window.togglePasswordVisibility = (inputId, iconElement) => {
             const passInput = document.getElementById(inputId);
-            if (passInput.type === 'password') {
-                passInput.type = 'text';
-                iconElement.classList.remove('fa-eye');
-                iconElement.classList.add('fa-eye-slash');
-            } else {
-                passInput.type = 'password';
-                iconElement.classList.remove('fa-eye-slash');
-                iconElement.classList.add('fa-eye');
+            if (passInput.type === 'password') { passInput.type = 'text'; iconElement.classList.replace('fa-eye', 'fa-eye-slash'); } 
+            else { passInput.type = 'password'; iconElement.classList.replace('fa-eye-slash', 'fa-eye'); }
+        };
+
+        window.openSettingsModal = () => {
+            document.getElementById('set-app-name').value = globalConfig.appName;
+            document.getElementById('set-admin-user').value = globalConfig.adminUser;
+            document.getElementById('set-admin-pass').value = globalConfig.adminPass;
+            document.getElementById('settings-modal').classList.add('active');
+        };
+
+        window.closeSettingsModal = () => {
+            document.getElementById('settings-modal').classList.remove('active');
+        };
+
+        window.saveSettings = async () => {
+            if (!currentUser) return;
+            const newName = document.getElementById('set-app-name').value.trim() || 'FESTIE';
+            const newUser = document.getElementById('set-admin-user').value.trim() || 'admin';
+            const newPass = document.getElementById('set-admin-pass').value.trim() || 'admin';
+            
+            try {
+                const configRef = doc(db, 'artifacts', storageAppId, 'public', 'data', 'config', 'main');
+                await setDoc(configRef, { appName: newName, adminUser: newUser, adminPass: newPass }, { merge: true });
+                showToast("System settings updated.", "success");
+                closeSettingsModal();
+            } catch (error) {
+                showToast("Failed to save settings.", "error");
             }
         };
 
-        window.logout = () => {
-            loggedInStudentId = null;
-            cancelEdit();
-            window.navTo('landing');
-            showToast("Logged out successfully.", "info");
-        };
+        window.logout = () => { loggedInStudentId = null; window.navTo('landing'); showToast("Logged out.", "info"); };
 
-        // --- Handlers ---
         window.handleAdminLogin = () => {
             const u = document.getElementById('auth-admin-user').value;
             const p = document.getElementById('auth-admin-pass').value;
-            
-            if (u === adminCreds.username && p === adminCreds.password) {
-                window.navTo('admin-bio');
-                runBiometricSimulation();
-            } else {
-                showToast("Invalid credentials.", "error");
-            }
-        };
-
-        window.openAdminSettings = () => {
-            document.getElementById('setting-admin-user').value = adminCreds.username;
-            document.getElementById('setting-admin-pass-old').value = '';
-            document.getElementById('setting-admin-pass-new').value = '';
-            
-            // Ensure inputs revert back to hidden password mode on open
-            ['setting-admin-pass-old', 'setting-admin-pass-new'].forEach(id => {
-                const input = document.getElementById(id);
-                input.type = 'password';
-                const icon = document.querySelector(`#${id} + .password-toggle`);
-                if(icon) {
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            });
-            
-            document.getElementById('admin-settings-modal').classList.add('active');
-        };
-
-        window.closeAdminSettings = () => {
-            document.getElementById('admin-settings-modal').classList.remove('active');
-        };
-
-        window.saveAdminSettings = async () => {
-            if (!currentUser) return showToast("Database offline", "error");
-
-            const newUser = document.getElementById('setting-admin-user').value.trim();
-            const oldPass = document.getElementById('setting-admin-pass-old').value;
-            const newPass = document.getElementById('setting-admin-pass-new').value;
-
-            if (!newUser || !oldPass || !newPass) return showToast("All fields are required.", "error");
-            if (oldPass !== adminCreds.password) return showToast("Current password is incorrect.", "error");
-
-            try {
-                // Using setDoc directly ensures it creates the document if this is the first time running
-                const docRef = doc(db, 'artifacts', storageAppId, 'public', 'data', 'settings', 'admin_profile');
-                await setDoc(docRef, { username: newUser, password: newPass });
-                
-                showToast("Admin credentials updated successfully.", "success");
-                closeAdminSettings();
-            } catch (error) {
-                if (error.code === 'permission-denied') {
-                    showErrorModal("Permission Denied", "Cannot write to database. Please check Firestore Rules.");
-                } else {
-                    showToast("Failed to save settings.", "error");
-                }
-            }
-        };
-
-        function runBiometricSimulation() {
-            const scanner = document.getElementById('scanner');
-            const status = document.getElementById('bio-status');
-            
-            setTimeout(() => {
-                scanner.classList.add('scanning');
-                status.textContent = "Scanning blueprint...";
-                status.style.color = "var(--fg)";
-            }, 500);
-
-            setTimeout(() => {
-                scanner.classList.remove('scanning');
-                status.innerHTML = '<i class="fa-solid fa-check" style="color:var(--success)"></i> Access Granted';
-                scanner.querySelector('i').style.color = "var(--success)";
-            }, 2500);
-
-            setTimeout(() => {
-                scanner.querySelector('i').style.color = "";
-                status.style.color = "";
-                status.textContent = "Waiting for scan...";
+            if (u === globalConfig.adminUser && p === globalConfig.adminPass) {
                 window.navTo('admin-dash');
-                showToast("Welcome back, Admin.", "success");
-            }, 3200);
-        }
+            } else { showToast("Invalid credentials.", "error"); }
+        };
 
         window.handleStudentLogin = () => {
             const username = document.getElementById('auth-student-id').value;
-            if (!username) return showToast("Please enter an ID", "error");
-
+            if (!username) return showToast("Enter an ID", "error");
             const student = studentsData.find(s => s.username === username);
-            if (student) {
-                loggedInStudentId = student.id;
-                window.navTo('student-dash');
-                updateStudentUI();
-                showToast("Wallet connected.", "success");
-            } else {
-                showToast("Student ID not found in system.", "error");
-            }
+            if (student) { loggedInStudentId = student.id; window.navTo('student-dash'); updateStudentUI(); } 
+            else { showToast("ID not found.", "error"); }
         };
 
-        // --- Database Writes ---
+        // Database Writes
         window.registerStudent = async () => {
-            if (!currentUser) return showToast("Database offline", "error");
-            
+            if (!currentUser) return;
             const name = document.getElementById('reg-name').value.trim();
             const className = document.getElementById('reg-class').value.trim();
             const username = document.getElementById('reg-username').value.trim();
-
-            if (!name || !className || !username) return showToast("Please fill all fields.", "error");
+            if (!name || !className || !username) return showToast("Fill all fields.", "error");
 
             try {
-                if (editingStudentId) {
-                    const conflict = studentsData.find(s => s.username === username && s.id !== editingStudentId);
-                    if (conflict) return showToast("Username already taken by another student.", "error");
-
-                    const studentDocRef = doc(db, 'artifacts', storageAppId, 'public', 'data', 'students', editingStudentId);
-                    await updateDoc(studentDocRef, { name, className, username });
-                    showToast(`Student ${name} updated.`, "success");
-                    cancelEdit();
-                } else {
-                    if (studentsData.find(s => s.username === username)) return showToast("Username already exists.", "error");
-
-                    const studentsRef = collection(db, 'artifacts', storageAppId, 'public', 'data', 'students');
-                    await addDoc(studentsRef, {
-                        name, className, username, balance: 0, transactions: []
-                    });
-                    
-                    document.getElementById('reg-name').value = '';
-                    document.getElementById('reg-class').value = '';
-                    document.getElementById('reg-username').value = '';
-                    showToast(`Student ${name} registered.`, "success");
-                }
-            } catch (error) {
-                if (error.code === 'permission-denied') {
-                    showErrorModal("Permission Denied", "Cannot write to database. Please check Firestore Rules.");
-                } else {
-                    showToast("Failed to save account.", "error");
-                }
-            }
+                if (studentsData.find(s => s.username === username)) return showToast("Username already exists.", "error");
+                await addDoc(collection(db, 'artifacts', storageAppId, 'public', 'data', 'students'), { name, className, username, balance: 0, transactions: [] });
+                document.getElementById('reg-name').value = ''; document.getElementById('reg-class').value = ''; document.getElementById('reg-username').value = '';
+                showToast(`Identity created.`, "success");
+            } catch (error) { if (error.code === 'permission-denied') showErrorModal("Permission Denied", "Check Firestore Rules."); }
         };
 
-        window.editStudent = (id) => {
-            const st = studentsData.find(s => s.id === id);
-            if (!st) return;
-            
-            editingStudentId = id;
-            
-            // Navigate back to dash if we are on the analytics page editing
-            navTo('admin-dash');
-            
-            document.getElementById('reg-name').value = st.name;
-            document.getElementById('reg-class').value = st.className;
-            document.getElementById('reg-username').value = st.username;
-            
-            document.getElementById('reg-title').innerHTML = '<i class="fa-solid fa-user-pen text-muted" style="margin-right:8px;"></i> Update Student';
-            document.getElementById('btn-register').textContent = 'Save Changes';
-            document.getElementById('btn-cancel-edit').classList.remove('hidden');
-            
-            setTimeout(() => {
-                document.getElementById('form-register-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
-        };
-
-        window.cancelEdit = () => {
-            editingStudentId = null;
-            document.getElementById('reg-name').value = '';
-            document.getElementById('reg-class').value = '';
-            document.getElementById('reg-username').value = '';
-            
-            document.getElementById('reg-title').innerHTML = '<i class="fa-solid fa-user-plus text-muted" style="margin-right:8px;"></i> Register Student';
-            document.getElementById('btn-register').textContent = 'Create Account';
-            document.getElementById('btn-cancel-edit').classList.add('hidden');
-        };
-
-        window.executeDelete = async () => {
-            if (!currentUser || !pendingDeleteId) return;
-            
-            try {
-                const studentDocRef = doc(db, 'artifacts', storageAppId, 'public', 'data', 'students', pendingDeleteId);
-                await deleteDoc(studentDocRef);
-                showToast("Student deleted permanently.", "success");
-                closeConfirmModal();
-                if(editingStudentId === pendingDeleteId) cancelEdit();
-            } catch (error) {
-                showToast("Failed to delete student.", "error");
-                closeConfirmModal();
-            }
-        };
-
-        // Execute Global Date Data Deletion
         window.executeDateDelete = async () => {
             if (!currentUser || !pendingDeleteDate) return;
-
             try {
                 const updates = [];
-                // Go through all students to recalculate balances without the specific date's transactions
                 studentsData.forEach(student => {
                     if (!student.transactions || student.transactions.length === 0) return;
-
-                    let hasChanges = false;
-                    const remainingTx = [];
-                    
+                    let hasChanges = false; const remainingTx = [];
                     student.transactions.forEach(tx => {
                         const txDateStr = new Date(tx.timestamp || tx.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                        if (txDateStr === pendingDeleteDate) {
-                            hasChanges = true;
-                        } else {
-                            remainingTx.push(tx);
-                        }
+                        if (txDateStr === pendingDeleteDate) hasChanges = true; else remainingTx.push(tx);
                     });
-
                     if (hasChanges) {
-                        // Recalculate balance for this student
                         let newBalance = 0;
-                        remainingTx.forEach(tx => {
-                            if (tx.type === 'upload') newBalance += tx.amount;
-                            if (tx.type === 'withdraw') newBalance -= tx.amount;
-                        });
-                        
-                        updates.push({
-                            ref: doc(db, 'artifacts', storageAppId, 'public', 'data', 'students', student.id),
-                            data: { balance: newBalance, transactions: remainingTx }
-                        });
+                        remainingTx.forEach(tx => { if (tx.type === 'upload') newBalance += tx.amount; if (tx.type === 'withdraw') newBalance -= tx.amount; });
+                        updates.push({ ref: doc(db, 'artifacts', storageAppId, 'public', 'data', 'students', student.id), data: { balance: newBalance, transactions: remainingTx } });
                     }
                 });
-
                 if (updates.length > 0) {
-                    // Update all modified students back to Firestore
                     await Promise.all(updates.map(u => updateDoc(u.ref, u.data)));
-                    showToast(`Deleted all transactions for ${pendingDeleteDate}.`, "success");
-                } else {
-                    showToast("No transactions found for this date.", "info");
-                }
-                
-                closeConfirmDateModal();
-            } catch (error) {
-                console.error(error);
-                if (error.code === 'permission-denied') {
-                    showErrorModal("Permission Denied", "Cannot write to database. Please check Firestore Rules.");
-                } else {
-                    showToast("Failed to delete date data.", "error");
+                    showToast(`Deleted data for ${pendingDeleteDate}.`, "success");
                 }
                 closeConfirmDateModal();
-            }
+            } catch (error) { showToast("Failed to purge data.", "error"); closeConfirmDateModal(); }
         };
 
         window.processTransaction = async (type) => {
-            if (!currentUser) return showToast("Database offline", "error");
-
+            if (!currentUser) return;
             const inputVal = document.getElementById('trans-user').value.trim();
             const amount = parseFloat(document.getElementById('trans-amount').value);
+            const dateVal = document.getElementById('trans-date').value;
 
-            if (!inputVal || isNaN(amount) || amount <= 0) return showToast("Invalid student or amount.", "error");
+            if (!inputVal || isNaN(amount) || amount <= 0) return showToast("Invalid input.", "error");
 
-            const student = studentsData.find(s => s.username === inputVal);
-            if (!student) return showToast("Student not found. Please select from list.", "error");
-
-            if (type === 'withdraw' && amount > student.balance) {
-                return showToast(`Insufficient balance. Max withdrawal is $${student.balance}.`, "error");
-            }
+            const student = studentsData.find(s => s.username === inputVal || s.name.toLowerCase() === inputVal.toLowerCase());
+            if (!student) return showToast("Identity not found.", "error");
+            if (type === 'withdraw' && amount > student.balance) return showToast(`Insufficient funds (₹${student.balance} available).`, "error");
 
             const newBalance = type === 'upload' ? student.balance + amount : student.balance - amount;
             
-            // Add a timestamp for robust sorting in global history
-            const newTx = { type, amount, date: new Date().toLocaleString(), timestamp: Date.now() };
-            const updatedTransactions = [newTx, ...(student.transactions || [])].slice(0, 50);
+            // Default to current time, but allow override if a date was selected
+            let txTimestamp = Date.now();
+            let txDateStr = new Date().toLocaleString();
+            
+            if (dateVal) {
+                // Set to noon of the selected date to prevent timezone shift issues
+                const selectedDate = new Date(dateVal + 'T12:00:00');
+                txTimestamp = selectedDate.getTime();
+                txDateStr = selectedDate.toLocaleString();
+            }
+
+            const newTx = { type, amount, date: txDateStr, timestamp: txTimestamp };
+            const updatedTransactions = [newTx, ...(student.transactions || [])];
 
             try {
-                const studentDocRef = doc(db, 'artifacts', storageAppId, 'public', 'data', 'students', student.id);
-                await updateDoc(studentDocRef, {
-                    balance: newBalance, transactions: updatedTransactions
-                });
-                
-                document.getElementById('trans-amount').value = '';
+                await updateDoc(doc(db, 'artifacts', storageAppId, 'public', 'data', 'students', student.id), { balance: newBalance, transactions: updatedTransactions });
+                document.getElementById('trans-amount').value = ''; 
                 document.getElementById('trans-user').value = '';
-                showToast(`Successfully processed $${amount} ${type}.`, "success");
-            } catch (error) {
-                showToast("Transaction failed.", "error");
-            }
+                document.getElementById('trans-date').value = '';
+                showToast(`Ledger updated.`, "success");
+            } catch (error) { showToast("Transaction failed.", "error"); }
         };
 
-        // --- Database Analytics Filtering ---
+        // Reports Logic
+        window.generateStudentReport = () => {
+            const inputVal = document.getElementById('report-student-input').value.trim();
+            if(!inputVal) return;
+            const student = studentsData.find(s => s.username === inputVal || s.name === inputVal);
+            if(!student) return showToast("Identity not found", "error");
+
+            let tCredit = 0, tWithdraw = 0;
+            let dailyStatsMap = {};
+
+            // Aggregate into Schema { date, deposit, withdraw, balance }
+            (student.transactions || []).forEach(tx => {
+                if(tx.type === 'upload') tCredit += tx.amount;
+                if(tx.type === 'withdraw') tWithdraw += tx.amount;
+                
+                const dateStr = new Date(tx.timestamp || tx.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                
+                if (!dailyStatsMap[dateStr]) {
+                    dailyStatsMap[dateStr] = { date: dateStr, deposit: 0, withdraw: 0, timestamp: new Date(tx.timestamp || tx.date).setHours(0,0,0,0) };
+                }
+                
+                if (tx.type === 'upload') dailyStatsMap[dateStr].deposit += tx.amount;
+                if (tx.type === 'withdraw') dailyStatsMap[dateStr].withdraw += tx.amount;
+            });
+
+            // Sort newest first
+            const sortedDates = Object.values(dailyStatsMap).sort((a, b) => b.timestamp - a.timestamp);
+
+            const txRows = sortedDates.map(stat => {
+                const netDay = stat.deposit - stat.withdraw;
+                const netColor = netDay > 0 ? 'var(--money-in)' : (netDay < 0 ? 'var(--money-out)' : 'inherit');
+                const netPrefix = netDay > 0 ? '+' : '';
+                return `
+                    <tr>
+                        <td class="text-muted" style="font-size: 13px;">${stat.date}</td>
+                        <td style="color: var(--money-in); font-weight: 500;">₹${stat.deposit}</td>
+                        <td style="color: var(--money-out); font-weight: 500;">₹${stat.withdraw}</td>
+                        <td style="color: ${netColor}; font-weight: 600; text-align:right;">${netPrefix}₹${netDay}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('student-report-output').innerHTML = `
+                <div style="margin-bottom: 32px;">
+                    <h2 style="margin-bottom: 8px; font-weight: 600; font-size: 1.5rem;">${student.name}</h2>
+                    <p class="text-muted" style="font-size: 14px;">ID: ${student.username} &nbsp;|&nbsp; Class: ${student.className}</p>
+                </div>
+                <div class="grid grid-cols-3 mb-8">
+                    <div class="report-summary-box"><p>Total Credit</p><h3 class="text-success">₹${tCredit}</h3></div>
+                    <div class="report-summary-box"><p>Total Withdraw</p><h3 class="text-danger">₹${tWithdraw}</h3></div>
+                    <div class="report-summary-box"><p>Net Balance</p><h3 style="color: var(--fg);">₹${student.balance}</h3></div>
+                </div>
+                <h3 style="margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;"><i class="fa-solid fa-receipt text-muted"></i> Ledger History</h3>
+                <div style="overflow-x: auto;">
+                    <table style="margin-top: 0;">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left;">Date</th>
+                                <th style="text-align:left;">Deposit</th>
+                                <th style="text-align:left;">Withdraw</th>
+                                <th style="text-align:right;">Balance of Day</th>
+                            </tr>
+                        </thead>
+                        <tbody>${txRows || '<tr><td colspan="4" class="text-center text-muted" style="padding: 20px;">No transactions recorded.</td></tr>'}</tbody>
+                    </table>
+                </div>
+            `;
+        };
+
+        window.generateClassReport = () => {
+            const className = document.getElementById('report-class-input').value;
+            if(!className) return;
+            const classStudents = studentsData.filter(s => s.className === className);
+            if(classStudents.length === 0) return showToast("No active identities found", "error");
+
+            let tCredit = 0, tWithdraw = 0, tBalance = 0;
+            let allClassTx = [];
+
+            classStudents.forEach(student => {
+                tBalance += student.balance;
+                (student.transactions || []).forEach(tx => {
+                    if(tx.type === 'upload') tCredit += tx.amount;
+                    if(tx.type === 'withdraw') tWithdraw += tx.amount;
+                    allClassTx.push({ ...tx, studentName: student.name, studentUsername: student.username });
+                });
+            });
+
+            allClassTx.sort((a,b) => (b.timestamp || new Date(b.date).getTime()) - (a.timestamp || new Date(a.date).getTime()));
+
+            const txRows = allClassTx.map(tx => {
+                const dateStr = new Date(tx.timestamp || tx.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const isUp = tx.type === 'upload';
+                return `
+                    <tr>
+                        <td style="font-size: 13px;" class="text-muted">${dateStr}</td>
+                        <td style="font-weight: 400; color: var(--fg);">${tx.studentName}</td>
+                        <td style="text-transform: capitalize;">${tx.type === 'upload' ? 'Deposit' : 'Withdraw'}</td>
+                        <td style="font-weight: 500; color: ${isUp ? 'var(--money-in)' : 'var(--money-out)'}; text-align:right;">${isUp ? '+' : '-'}₹${tx.amount}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('class-report-output').innerHTML = `
+                <div style="margin-bottom: 32px;">
+                    <h2 style="margin-bottom: 8px; font-weight: 600; font-size: 1.5rem;">Class Ledger: ${className}</h2>
+                    <p class="text-muted" style="font-size: 14px;">Identities Active: ${classStudents.length}</p>
+                </div>
+                <div class="grid grid-cols-3 mb-8">
+                    <div class="report-summary-box"><p>Total Credit</p><h3 class="text-success">₹${tCredit}</h3></div>
+                    <div class="report-summary-box"><p>Total Withdraw</p><h3 class="text-danger">₹${tWithdraw}</h3></div>
+                    <div class="report-summary-box"><p>Net Balance</p><h3 style="color: var(--fg);">₹${tBalance}</h3></div>
+                </div>
+                <h3 style="margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;"><i class="fa-solid fa-receipt text-muted"></i> Class Ledger History</h3>
+                <div style="overflow-x: auto;">
+                    <table style="margin-top: 0;">
+                        <thead><tr><th>Date</th><th>Identity</th><th>Type</th><th style="text-align:right;">Amount</th></tr></thead>
+                        <tbody>${txRows || '<tr><td colspan="4" class="text-center text-muted" style="padding: 20px;">No transactions recorded.</td></tr>'}</tbody>
+                    </table>
+                </div>
+            `;
+        };
+
+        // REQUESTED FEATURE: Database Analytics Filtering exactly matching schema {date, totalDeposit, totalWithdraw, balance of day}
         window.filterDatabaseByDate = () => {
             const startStr = document.getElementById('db-start-date').value;
             const endStr = document.getElementById('db-end-date').value;
@@ -1318,55 +1059,55 @@
             
             let fCredit = 0;
             let fDebit = 0;
-            let dailyStats = {};
+            let dailyStatsMap = {};
             
+            // Generate Schema: { date, totalDeposit, totalWithdraw, balance of day (calculated below) }
             filteredTx.forEach(tx => {
                 if (tx.type === 'upload') fCredit += tx.amount;
                 if (tx.type === 'withdraw') fDebit += tx.amount;
 
-                // Group by Date for the Daily Breakdown Table
                 const txDate = new Date(tx.timestamp || tx.date);
                 const dateKey = txDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 
-                if (!dailyStats[dateKey]) {
-                    dailyStats[dateKey] = { count: 0, deposit: 0, withdraw: 0, timestamp: txDate.getTime() };
+                if (!dailyStatsMap[dateKey]) {
+                    dailyStatsMap[dateKey] = { date: dateKey, totalDeposit: 0, totalWithdraw: 0, timestamp: txDate.getTime() };
                 }
-                dailyStats[dateKey].count += 1;
-                if (tx.type === 'upload') dailyStats[dateKey].deposit += tx.amount;
-                if (tx.type === 'withdraw') dailyStats[dateKey].withdraw += tx.amount;
+                if (tx.type === 'upload') dailyStatsMap[dateKey].totalDeposit += tx.amount;
+                if (tx.type === 'withdraw') dailyStatsMap[dateKey].totalWithdraw += tx.amount;
             });
             
-            // Because Net Balance in the context of transactions specifically is Deposit - Withdraw
             let fBalance = fCredit - fDebit;
 
-            document.getElementById('db-total-deposit').textContent = `$${fCredit}`;
-            document.getElementById('db-total-withdraw').textContent = `$${fDebit}`;
-            document.getElementById('db-total-balance').textContent = `$${fBalance}`;
+            document.getElementById('db-total-deposit').textContent = `₹${fCredit}`;
+            document.getElementById('db-total-withdraw').textContent = `₹${fDebit}`;
+            document.getElementById('db-total-balance').textContent = `₹${fBalance}`;
 
-            // Render the Daily Breakdown Table
             const tbody = document.getElementById('table-daily-summary');
             if (!tbody) return;
             tbody.innerHTML = '';
 
-            const sortedDates = Object.keys(dailyStats).sort((a, b) => dailyStats[b].timestamp - dailyStats[a].timestamp);
+            // Sort by descending timestamp
+            const sortedDates = Object.keys(dailyStatsMap).sort((a, b) => dailyStatsMap[b].timestamp - dailyStatsMap[a].timestamp);
 
             if (sortedDates.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted" style="padding: 30px;">No transaction data found for this period.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted" style="padding: 30px;">No transaction data found.</td></tr>';
             } else {
                 sortedDates.forEach(date => {
-                    const stat = dailyStats[date];
-                    const net = stat.deposit - stat.withdraw;
-                    const netColor = net > 0 ? 'var(--success)' : (net < 0 ? 'var(--danger)' : 'inherit');
-                    const netPrefix = net > 0 ? '+' : '';
+                    const stat = dailyStatsMap[date];
+                    // Schema Requirement: balance of day
+                    const balanceOfDay = stat.totalDeposit - stat.totalWithdraw; 
+                    
+                    const netColor = balanceOfDay > 0 ? 'var(--money-in)' : (balanceOfDay < 0 ? 'var(--money-out)' : 'inherit');
+                    const netPrefix = balanceOfDay > 0 ? '+' : '';
+                    
                     tbody.innerHTML += `
                         <tr>
-                            <td style="font-weight: 500;">${date}</td>
-                            <td class="text-muted" style="font-weight: 500;">${stat.count}</td>
-                            <td style="color: var(--success); font-weight: 600;">$${stat.deposit}</td>
-                            <td style="color: var(--danger); font-weight: 600;">$${stat.withdraw}</td>
-                            <td style="color: ${netColor}; font-weight: 700; text-align:right;">${netPrefix}$${net}</td>
-                            <td style="text-align:right;">
-                                <button class="btn-icon delete text-danger" onclick="confirmDeleteDate('${date}')" title="Delete Data for ${date}"><i class="fa-solid fa-trash" style="font-size: 14px;"></i></button>
+                            <td style="font-weight: 400; color: var(--fg); font-size: 14px;">${stat.date}</td>
+                            <td style="color: var(--money-in); font-weight: 500;">₹${stat.totalDeposit}</td>
+                            <td style="color: var(--money-out); font-weight: 500;">₹${stat.totalWithdraw}</td>
+                            <td style="color: ${netColor}; font-weight: 600; text-align:right;">${netPrefix}₹${balanceOfDay}</td>
+                            <td class="no-print" style="text-align:right; width: 60px;">
+                                <button class="btn-icon delete text-danger" onclick="confirmDeleteDate('${date}')" title="Delete Day"><i class="fa-solid fa-trash" style="font-size: 12px;"></i></button>
                             </td>
                         </tr>
                     `;
@@ -1377,14 +1118,12 @@
         window.resetDatabaseFilter = () => {
             document.getElementById('db-start-date').value = '';
             document.getElementById('db-end-date').value = '';
-            window.filterDatabaseByDate(); // Re-run with empty strings to show all
+            window.filterDatabaseByDate(); 
         };
 
-        // --- Render UI ---
+        // Render UI
         function updateAdminUI() {
-            let totalCredit = 0;
-            let totalDebit = 0;
-            let totalFunds = 0;
+            let totalCredit = 0; let totalDebit = 0; let totalFunds = 0;
             let allTransactions = [];
 
             studentsData.forEach(s => {
@@ -1392,80 +1131,35 @@
                 (s.transactions || []).forEach(tx => {
                     if (tx.type === 'upload') totalCredit += tx.amount;
                     if (tx.type === 'withdraw') totalDebit += tx.amount;
-                    
-                    // Push to global history array
-                    allTransactions.push({
-                        ...tx,
-                        studentName: s.name,
-                        studentUsername: s.username
-                    });
+                    allTransactions.push({ ...tx, studentName: s.name, studentUsername: s.username });
                 });
             });
-            
-            // Expose globally for Date Filter
             window.allTransactionsGlobal = allTransactions;
 
-            // Sort global transactions natively (most recent first)
             allTransactions.sort((a, b) => {
                 const timeA = a.timestamp || new Date(a.date).getTime();
                 const timeB = b.timestamp || new Date(b.date).getTime();
                 return timeB - timeA;
             });
 
-            // Update Dash Stats
             document.getElementById('dash-total-students').textContent = studentsData.length;
-            document.getElementById('dash-total-funds').textContent = `$${totalFunds}`;
-            document.getElementById('dash-total-credit').textContent = `$${totalCredit}`;
-            document.getElementById('dash-total-debit').textContent = `$${totalDebit}`;
+            document.getElementById('dash-total-funds').textContent = `₹${totalFunds}`;
+            document.getElementById('dash-total-credit').textContent = `₹${totalCredit}`;
+            document.getElementById('dash-total-debit').textContent = `₹${totalDebit}`;
 
-            // Apply current date filters to DB tab safely
-            filterDatabaseByDate();
+            window.filterDatabaseByDate();
 
-            // Process Search Dropdown
             const datalist = document.getElementById('student-list');
-            datalist.innerHTML = '';
-            
-            // Process Student Table (Analytics View)
-            const tbody = document.getElementById('table-students');
-            tbody.innerHTML = '';
-
-            studentsData.forEach(st => {
-                datalist.innerHTML += `<option value="${st.username}">${st.name} (Class: ${st.className})</option>`;
-                
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${st.username}</strong></td>
-                        <td>${st.name}</td>
-                        <td>${st.className}</td>
-                        <td style="font-weight: 600; color: ${st.balance > 0 ? 'var(--success)' : 'inherit'};">$${st.balance}</td>
-                        <td style="text-align:right;">
-                            <button class="btn-icon" onclick="editStudent('${st.id}')" title="Edit Student"><i class="fa-solid fa-pen" style="font-size: 14px;"></i></button>
-                            <button class="btn-icon delete text-danger" onclick="confirmDelete('${st.id}')" title="Delete Student"><i class="fa-solid fa-trash" style="font-size: 14px;"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            // Process Global Transactions Table (Analytics View)
-            const txBody = document.getElementById('table-all-transactions');
-            txBody.innerHTML = '';
-            
-            if (allTransactions.length === 0) {
-                txBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted" style="padding: 30px;">No transaction history available.</td></tr>';
-            } else {
-                allTransactions.forEach(tx => {
-                    const isUp = tx.type === 'upload';
-                    const icon = isUp ? '<i class="fa-solid fa-arrow-turn-up"></i>' : '<i class="fa-solid fa-arrow-turn-down"></i>';
-                    txBody.innerHTML += `
-                        <tr>
-                            <td class="text-muted" style="font-size: 13px;">${tx.date}</td>
-                            <td><strong>${tx.studentName}</strong> <span class="text-muted" style="font-size: 12px; margin-left: 4px;">(${tx.studentUsername})</span></td>
-                            <td><span class="badge ${isUp ? 'up' : 'down'}">${icon} ${tx.type}</span></td>
-                            <td style="font-weight: 600; color: ${isUp ? 'var(--success)' : 'var(--danger)'};">${isUp ? '+' : '-'}$${tx.amount}</td>
-                        </tr>
-                    `;
-                });
+            if(datalist) datalist.innerHTML = '';
+            const classSelect = document.getElementById('report-class-input');
+            if (classSelect) {
+                const uniqueClasses = [...new Set(studentsData.map(s => s.className))].sort();
+                classSelect.innerHTML = '<option value="">Select Class...</option>' + uniqueClasses.map(c => `<option value="${c}">${c}</option>`).join('');
             }
+            
+            studentsData.forEach(st => {
+                if(datalist) datalist.innerHTML += `<option value="${st.username}">${st.name} (${st.className})</option>`;
+            });
         }
 
         function updateStudentUI() {
@@ -1473,45 +1167,60 @@
             if (!st) return window.logout();
 
             document.getElementById('st-name').textContent = st.name;
-            document.getElementById('st-details').innerHTML = `<i class="fa-solid fa-graduation-cap"></i> ${st.className} &nbsp;|&nbsp; <i class="fa-solid fa-id-badge"></i> ${st.username}`;
-            document.getElementById('st-balance').textContent = `$${st.balance}`;
+            document.getElementById('st-details').innerHTML = `<i class="fa-solid fa-id-badge"></i> ID: ${st.username} &nbsp;|&nbsp; <i class="fa-solid fa-graduation-cap"></i> Class: ${st.className}`;
+            document.getElementById('st-balance').textContent = `₹${st.balance}`;
 
             const tbody = document.getElementById('st-transactions');
+            const thead = document.getElementById('st-transactions-header');
             tbody.innerHTML = '';
+            thead.innerHTML = '';
 
             if (!st.transactions || st.transactions.length === 0) {
-                tbody.innerHTML = `<tr><td class="text-muted text-center" style="padding: 30px;"><i class="fa-solid fa-receipt mb-2" style="font-size: 24px; opacity: 0.5;"></i><br>No recent activity</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="text-muted text-center" style="padding: 30px;">No recent ledger activity</td></tr>`;
                 return;
             }
 
+            let dailyStatsMap = {};
+
+            // Aggregate into Schema { date, deposit, withdraw, balance }
             st.transactions.forEach(tx => {
-                const isUp = tx.type === 'upload';
-                const icon = isUp ? '<i class="fa-solid fa-money-bill-trend-up"></i>' : '<i class="fa-solid fa-money-bill-transfer"></i>';
+                const dateStr = new Date(tx.timestamp || tx.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                
+                if (!dailyStatsMap[dateStr]) {
+                    dailyStatsMap[dateStr] = { date: dateStr, deposit: 0, withdraw: 0, timestamp: new Date(tx.timestamp || tx.date).setHours(0,0,0,0) };
+                }
+                
+                if (tx.type === 'upload') dailyStatsMap[dateStr].deposit += tx.amount;
+                if (tx.type === 'withdraw') dailyStatsMap[dateStr].withdraw += tx.amount;
+            });
+
+            // Sort newest first
+            const sortedDates = Object.values(dailyStatsMap).sort((a, b) => b.timestamp - a.timestamp);
+
+            thead.innerHTML = `
+                <tr>
+                    <th style="text-align:left; font-size:12px; color:var(--muted); padding-bottom:8px;">Date</th>
+                    <th style="text-align:center; font-size:12px; color:var(--muted); padding-bottom:8px;">Deposit</th>
+                    <th style="text-align:center; font-size:12px; color:var(--muted); padding-bottom:8px;">Withdraw</th>
+                    <th style="text-align:right; font-size:12px; color:var(--muted); padding-bottom:8px;">Balance</th>
+                </tr>
+            `;
+
+            sortedDates.forEach(stat => {
+                const netDay = stat.deposit - stat.withdraw;
+                const netColor = netDay > 0 ? 'var(--money-in)' : (netDay < 0 ? 'var(--money-out)' : 'inherit');
+                const netPrefix = netDay > 0 ? '+' : '';
+
                 tbody.innerHTML += `
                     <tr>
-                        <td style="width: 40px; padding-right: 0;"><span class="badge ${isUp ? 'up' : 'down'}" style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">${icon}</span></td>
-                        <td>
-                            <div style="font-weight: 600; text-transform: capitalize; margin-bottom: 2px;">${tx.type}</div>
-                            <div class="text-muted" style="font-size: 12px;">${tx.date}</div>
-                        </td>
-                        <td style="text-align: right; font-weight: 700; font-size: 16px; color: ${isUp ? 'var(--success)' : 'var(--danger)'};">${isUp ? '+' : '-'}$${tx.amount}</td>
+                        <td style="font-weight: 500; color: var(--fg); font-size: 13px;">${stat.date}</td>
+                        <td style="color: var(--money-in); font-weight: 500; text-align:center;">₹${stat.deposit}</td>
+                        <td style="color: var(--money-out); font-weight: 500; text-align:center;">₹${stat.withdraw}</td>
+                        <td style="color: ${netColor}; font-weight: 600; text-align:right;">${netPrefix}₹${netDay}</td>
                     </tr>
                 `;
             });
         }
-
-        window.exportCSV = () => {
-            if(studentsData.length === 0) return showToast("No data to export.", "info");
-            let csv = "ID,Name,Class,Balance\n";
-            studentsData.forEach(st => { csv += `${st.username},${st.name},${st.className},${st.balance}\n`; });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('href', url);
-            a.setAttribute('download', 'flow_export.csv');
-            a.click();
-            showToast("Export downloaded.", "success");
-        };
     </script>
 </body>
 </html>
